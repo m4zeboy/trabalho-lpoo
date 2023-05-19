@@ -3,7 +3,7 @@ package biblioteca.usuario;
 import java.util.Random;
 
 public abstract class Usuario {
-  protected int id;
+  private int id;
   protected String nome;
   protected String cpf;
 
@@ -30,5 +30,12 @@ public abstract class Usuario {
 
   public void setCpf(String cpf) {
     this.cpf = cpf;
+  }
+
+  public String toString() {
+    String saida = "Usuario #" + this.id +"\n";
+    saida += "Nome: " + this.nome + "\n";
+    saida += "CPF: " + this.cpf + "\n";
+    return saida;
   }
 }
