@@ -7,6 +7,10 @@ public class Aluno extends Usuario {
     super(nome, cpf);
     this.rga = rga;
   }
+  public Aluno(String nome, String cpf, String rga) {
+    super(nome, cpf);
+    this.rga = Integer.parseInt(rga);
+  }
 
   public int getRga() {
     return rga;
@@ -14,5 +18,11 @@ public class Aluno extends Usuario {
 
   public void setRga(int rga) {
     this.rga = rga;
+  }
+
+  public String toString() {
+    String saida = super.toString();
+    saida += "RGA: " + this.rga + "\n";
+    return saida;
   }
 }
