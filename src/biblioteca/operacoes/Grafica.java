@@ -1,5 +1,6 @@
 package biblioteca.operacoes;
 
+import biblioteca.exemplar.Exemplar;
 import biblioteca.usuario.Aluno;
 import biblioteca.usuario.Servidor;
 import biblioteca.usuario.Usuario;
@@ -29,16 +30,32 @@ public class Grafica extends Operacoes {
     return Integer.parseInt(JOptionPane.showInputDialog(mensagem));
   }
 
-  public Usuario criarUsuario() {
+  public Usuario criarUsuario(ArrayList<Usuario> usuarios) {
     String nome = JOptionPane.showInputDialog("Nome: ");
-    String cpf = JOptionPane.showInputDialog("Nome: ");
+    String cpf = JOptionPane.showInputDialog("CPF: ");
+
+    Usuario temp = buscarUsuario(usuarios, cpf);
+    if(temp != null) {
+      JOptionPane.showMessageDialog(null, "Já existe um usuário com esse CPF.");
+      return null;
+    }
     String[] tipos = {"Aluno", "Servidor"};
     int tipo = JOptionPane.showOptionDialog(null, "Qual tipo de Usuário você deseja criar?", "Biblioteca", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, tipos, tipos[0]);
     if(tipo == 1) {
       String siape = JOptionPane.showInputDialog(null, "SIAPE: ");
+      Servidor servidorTemp = buscaServidorPorSiape(usuarios, siape);
+      if(servidorTemp != null) {
+        JOptionPane.showMessageDialog(null, "Já existe um Servidor com esse SIAPE.");
+        return null;
+      }
       return new Servidor(nome, cpf, siape);
     }
     String rga = JOptionPane.showInputDialog(null, "RGA: ");
+    Aluno alunoTemp = buscaAlunoPorRga(usuarios, rga);
+    if(alunoTemp != null) {
+      JOptionPane.showMessageDialog(null, "Já existe um Aluno com esse RGA.");
+      return null;
+    }
     return new Aluno(nome,cpf,rga);
   }
 
@@ -58,6 +75,29 @@ public class Grafica extends Operacoes {
     }
     return null;
   }
+
+  public Servidor buscaServidorPorSiape(ArrayList<Usuario> usuarios, String siape) {
+    for(Usuario usuario: usuarios) {
+      if(usuario instanceof Servidor) {
+        if(((Servidor) usuario).getSiape() == Integer.parseInt(siape)) {
+          return ((Servidor) usuario);
+        }
+      }
+    }
+    return null;
+  }
+
+  public Aluno buscaAlunoPorRga(ArrayList<Usuario> usuarios, String rga) {
+    for(Usuario usuario: usuarios) {
+      if(usuario instanceof Aluno) {
+        if(((Aluno) usuario).getRga() == Integer.parseInt(rga)) {
+          return ((Aluno) usuario);
+        }
+      }
+    }
+    return null;
+  }
+
 
   public Usuario buscarUsuario(ArrayList<Usuario> usuarios, String cpf) {
     for(Usuario usuario: usuarios) {
@@ -108,25 +148,19 @@ public class Grafica extends Operacoes {
     }
     if(usuario instanceof Servidor) {
       String novoSIAPE = JOptionPane.showInputDialog("Novo SIAPE: ");
-      for(Usuario temp: usuarios) {
-        if(temp instanceof Servidor) {
-          if(((Servidor) temp).getSiape() == Integer.parseInt(novoSIAPE)) {
-            JOptionPane.showMessageDialog(null, "Já existe um Servidor com esse SIAPE.");
-            return;
-          }
-        }
+      Servidor servidorTemp = buscaServidorPorSiape(usuarios, novoSIAPE);
+      if(servidorTemp != null) {
+        JOptionPane.showMessageDialog(null, "Já existe um Servidor com esse SIAPE.");
+        return;
       }
       ((Servidor) usuario).setSiape(Integer.parseInt(novoSIAPE));
       JOptionPane.showMessageDialog(null, "SIAPE Atualizado com sucesso.");
     } else {
       String novoRGA = JOptionPane.showInputDialog("Novo RGA: ");
-      for(Usuario temp: usuarios) {
-        if(temp instanceof Aluno) {
-          if(((Aluno) temp).getRga() == Integer.parseInt(novoRGA)) {
-            JOptionPane.showMessageDialog(null, "Já existe um Aluno com esse RGA.");
-            return;
-          }
-        }
+      Aluno alunoTemp = buscaAlunoPorRga(usuarios, novoRGA);
+      if(alunoTemp != null) {
+        JOptionPane.showMessageDialog(null, "Já existe um Aluno com esse RGA.");
+        return;
       }
       ((Aluno) usuario).setRga(Integer.parseInt(novoRGA));
       JOptionPane.showMessageDialog(null, "RGA Atualizado com sucesso.");
@@ -143,5 +177,8 @@ public class Grafica extends Operacoes {
     mensagem += "6 - Voltar\n\n";
     String opcao = JOptionPane.showInputDialog(mensagem);
     return Integer.parseInt(opcao);
+  }
+  public Exemplar criarExemplar() {
+    return null;
   }
 }
