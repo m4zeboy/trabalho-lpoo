@@ -29,10 +29,47 @@ public class Main {
                 usuarios.add(novo);
                 break;
               case 2:
+                /* Buscar Usuário por CPF */
+                  Usuario usuario = operacoes.buscarUsuario(usuarios);
+                  if(usuario != null) {
+                    JOptionPane.showMessageDialog(null, usuario);
+                  } else {
+                    JOptionPane.showMessageDialog(null,operacoes.MENSAGEM_USUARIO_NAO_ENCONTRADO);
+                  }
                 break;
               case 3:
+                /* excluir usuário */
+
                 break;
               case 4:
+                /* editar usuário */
+                boolean continuarEditarUsuario = true;
+                while(continuarEditarUsuario) {
+                  int opcaoEditarUsuario = operacoes.selecionarOpcaoDeEditarUsuario();
+                  switch (opcaoEditarUsuario) {
+                    case 1:
+                      /* Editar nome */
+                      operacoes.editarNomeDoUsuario(usuarios);
+                      break;
+                    case 2:
+                      /* Editar CPF */
+                      operacoes.editarCPFDoUsuario(usuarios);
+                      break;
+                    case 3:
+                      /* Editar RGA/SIAPE */
+                      operacoes.editarRGAOuSIAPEDoUsuario(usuarios);
+                      break;
+                    case 4:
+                      /* Voltar */
+                      continuarEditarUsuario = false;
+                      break;
+                    default:
+                      /* opção invalida */
+                      JOptionPane.showMessageDialog(null, operacoes.MENSAGEM_OPCAO_INVALIDA);
+                      break;
+
+                  }
+                }
                 break;
               case 5:
                 operacoes.listarUsuarios(usuarios);
@@ -41,13 +78,39 @@ public class Main {
                 continuarUsuarios = false;
                 break;
               default:
-                JOptionPane.showMessageDialog(null, "Opção Inválida.");
+                JOptionPane.showMessageDialog(null, operacoes.MENSAGEM_OPCAO_INVALIDA);
                 break;
             }
           }
-
           break;
         case 2:
+          boolean continuarExemplares = true;
+          while(continuarExemplares) {
+            int opcaoDeExemplares = operacoes.selecionarOpcaoDeExemplares();
+            switch (opcaoDeExemplares) {
+              case 1:
+                /* cadastrar exemplar */
+                break;
+              case 2:
+                /* consultar por codigo */
+                break;
+              case 3:
+                /* excluir exemplar */
+                break;
+              case 4:
+                /* editar exemplar */
+                break;
+              case 5:
+                /* listar todos os exemplares */
+                break;
+              case 6:
+                continuarExemplares = false;
+                break;
+              default:
+                JOptionPane.showMessageDialog(null, operacoes.MENSAGEM_OPCAO_INVALIDA);
+                break;
+            }
+          }
           break;
         case 3:
           break;
@@ -61,7 +124,7 @@ public class Main {
           continuar = false;
           break;
         default:
-          JOptionPane.showMessageDialog(null, "Opção Inválida.");
+          JOptionPane.showMessageDialog(null, operacoes.MENSAGEM_OPCAO_INVALIDA);
           break;
       }
     }
