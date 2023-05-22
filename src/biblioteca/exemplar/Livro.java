@@ -7,6 +7,10 @@ public class Livro extends Exemplar {
         super(titulo);
         this.ano = ano;
     }
+    public Livro(String titulo, String ano) {
+        super(titulo);
+        this.ano = Integer.parseInt(ano);
+    }
 
     public int getAno() {
         return ano;
