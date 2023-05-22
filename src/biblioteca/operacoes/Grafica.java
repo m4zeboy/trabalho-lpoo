@@ -1,5 +1,6 @@
 package biblioteca.operacoes;
 
+import biblioteca.Categoria;
 import biblioteca.exemplar.Digital;
 import biblioteca.exemplar.Exemplar;
 import biblioteca.exemplar.Livro;
@@ -110,7 +111,7 @@ public class Grafica extends Operacoes {
   public void editarNomeDoUsuario(ArrayList<Usuario> usuarios) {
     Usuario usuario = buscarUsuario(usuarios);
     if(usuario == null) {
-      JOptionPane.showMessageDialog(null, MENSAGEM_USUARIO_NAO_ENCONTRADO);
+      JOptionPane.showMessageDialog(null, USUARIO_NAO_ENCONTRADO);
       return;
     }
     String novoNome = JOptionPane.showInputDialog("Novo Nome: ");
@@ -120,7 +121,7 @@ public class Grafica extends Operacoes {
   public void editarCPFDoUsuario(ArrayList<Usuario> usuarios) {
     Usuario usuario = buscarUsuario(usuarios);
     if(usuario == null) {
-      JOptionPane.showMessageDialog(null, MENSAGEM_USUARIO_NAO_ENCONTRADO);
+      JOptionPane.showMessageDialog(null, USUARIO_NAO_ENCONTRADO);
       return;
     }
     String novoCPF = JOptionPane.showInputDialog("Novo CPF: ");
@@ -136,7 +137,7 @@ public class Grafica extends Operacoes {
   public void editarRGAOuSIAPEDoUsuario(ArrayList<Usuario> usuarios) {
     Usuario usuario = buscarUsuario(usuarios);
     if(usuario == null) {
-      JOptionPane.showMessageDialog(null, MENSAGEM_USUARIO_NAO_ENCONTRADO);
+      JOptionPane.showMessageDialog(null, USUARIO_NAO_ENCONTRADO);
       return;
     }
     if(usuario instanceof Servidor) {
@@ -184,6 +185,15 @@ public class Grafica extends Operacoes {
     return new Livro(titulo, ano);
   }
 
+  public void listarExemplares(ArrayList<Exemplar> acervo) {
+    String saida = "==================== ACERVO ====================\n";
+    for(Exemplar exemplar: acervo) {
+      saida += exemplar.toString();
+      saida +=     "================================================\n";
+    }
+    JOptionPane.showMessageDialog(null,saida);
+  }
+
   public Exemplar buscarExemplarPorCodigo(ArrayList<Exemplar> acervo) {
     String codigo = JOptionPane.showInputDialog("Código do Exemplar: ");
     for(Exemplar exemplar: acervo) {
@@ -205,9 +215,72 @@ public class Grafica extends Operacoes {
   public int selecionarOpcaoDeEditarExemplar() {
     String saida = "1 - Editar Título\n";
     saida += "2 - Editar Ano/Tipo de arquivo\n";
-    saida += "3 - Adicionar categoria";
+    saida += "3 - Adicionar categoria\n";
     saida += "4 - Remover Categoria\n";
     saida += "5 - Voltar\n\n";
-    return 0;
+    return Integer.parseInt(JOptionPane.showInputDialog(saida));
+  }
+
+  public void editarTituloDoExemplar(ArrayList<Exemplar> acervo) {
+    int codigo = Integer.parseInt(JOptionPane.showInputDialog("Código do Exemplar: "));
+    Exemplar temp = buscarExemplarPorCodigo(acervo, codigo);
+    if(temp == null) {
+      JOptionPane.showMessageDialog(null, Operacoes.EXEMPLAR_NAO_ENCONTRADO);
+      return;
+    }
+    String novoTitulo = JOptionPane.showInputDialog("Novo Título: ");
+    temp.setTitulo(novoTitulo);
+    JOptionPane.showMessageDialog(null,"Título editado com sucesso.");
+  }
+
+  public void editarAnoOuTipoDeArquivoDoExemplar(ArrayList<Exemplar> acervo) {
+    int codigo = Integer.parseInt(JOptionPane.showInputDialog("Código do Exemplar: "));
+    Exemplar temp = buscarExemplarPorCodigo(acervo, codigo);
+    if(temp == null) {
+      JOptionPane.showMessageDialog(null, Operacoes.EXEMPLAR_NAO_ENCONTRADO);
+      return;
+    }
+    if(temp instanceof Livro) {
+      int novoAno = Integer.parseInt(JOptionPane.showInputDialog("Novo ano: "));
+      ((Livro) temp).setAno(novoAno);
+      JOptionPane.showMessageDialog(null, "Ano editado com sucesso");
+    } else if(temp instanceof Midia) {
+      String novoTipoDeArquivo = JOptionPane.showInputDialog("Novo Tipo de Arquivo: ");
+      ((Midia) temp).setTipoArquivo(novoTipoDeArquivo);
+      JOptionPane.showMessageDialog(null, "Tipo de Arquivo editado com sucesso");
+    }
+  }
+
+  /* Categorias */
+  public int selecionarOpcaoDeCategorias() {
+    String mensagem = "1 - Cadastrar\n";
+    mensagem += "2 - Consultar por código\n";
+    mensagem += "3 - Excluir\n";
+    mensagem += "4 - Editar\n";
+    mensagem += "5 - Listar todos os cadastros\n";
+    mensagem += "6 - Voltar\n\n";
+    String opcao = JOptionPane.showInputDialog(mensagem);
+    return Integer.parseInt(opcao);
+  }
+
+  public Categoria buscarCategoriaPorNome(ArrayList<Categoria> categorias, String nome) {
+    for(Categoria categoria: categorias) {
+      if(categoria.getNome().equals(nome)) return categoria;
+    }
+    return null;
+  }
+
+  public Categoria criarCategoria(ArrayList<Categoria> categorias) {
+    String nome = JOptionPane.showInputDialog("Nome da Categoria: ");
+    Categoria temp = buscarCategoriaPorNome(categorias, nome);
+    if(temp != null) {
+      JOptionPane.showMessageDialog(null, "Já existe uma categoria com esse nome.");
+      return null;
+    }
+    return new Categoria(nome);
+  }
+
+  public void listarCategorias(ArrayList<Categoria> categorias) {
+
   }
 }
