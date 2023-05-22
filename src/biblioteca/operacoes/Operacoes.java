@@ -28,4 +28,9 @@ public abstract class  Operacoes {
 
   public abstract int selecionarOpcaoDeExemplares();
   public abstract Exemplar criarExemplar();
+
+  public abstract Exemplar buscarExemplarPorCodigo(ArrayList<Exemplar> acervo);
+  public abstract Exemplar buscarExemplarPorCodigo(ArrayList<Exemplar> acervo, int codigo);
+
+  public abstract int selecionarOpcaoDeEditarExemplar();
 }

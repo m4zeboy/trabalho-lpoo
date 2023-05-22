@@ -1,6 +1,9 @@
 package biblioteca.operacoes;
 
+import biblioteca.exemplar.Digital;
 import biblioteca.exemplar.Exemplar;
+import biblioteca.exemplar.Livro;
+import biblioteca.exemplar.Midia;
 import biblioteca.usuario.Aluno;
 import biblioteca.usuario.Servidor;
 import biblioteca.usuario.Usuario;
@@ -19,7 +22,6 @@ public class Grafica extends Operacoes {
     mensagem +=  "7 - Sair do programa\n\n";
     return Integer.parseInt(JOptionPane.showInputDialog(mensagem));
   }
-
   public int selecionarOpcaoDeUsuarios() {
     String mensagem = "1 - Cadastrar\n";
     mensagem += "2 - Pesquisar por CPF\n";
@@ -29,7 +31,6 @@ public class Grafica extends Operacoes {
     mensagem +=  "6 - Voltar\n\n";
     return Integer.parseInt(JOptionPane.showInputDialog(mensagem));
   }
-
   public Usuario criarUsuario(ArrayList<Usuario> usuarios) {
     String nome = JOptionPane.showInputDialog("Nome: ");
     String cpf = JOptionPane.showInputDialog("CPF: ");
@@ -58,7 +59,6 @@ public class Grafica extends Operacoes {
     }
     return new Aluno(nome,cpf,rga);
   }
-
   public void listarUsuarios(ArrayList<Usuario> usuarios) {
     String saida = "================ LISTA DE USUÁRIOS ===============\n";
     for(Usuario usuario: usuarios) {
@@ -67,7 +67,6 @@ public class Grafica extends Operacoes {
     }
     JOptionPane.showMessageDialog(null,saida);
   }
-
   public Usuario buscarUsuario(ArrayList<Usuario> usuarios) {
     String cpf = JOptionPane.showInputDialog("CPF: ");
     for(Usuario usuario: usuarios) {
@@ -75,7 +74,6 @@ public class Grafica extends Operacoes {
     }
     return null;
   }
-
   public Servidor buscaServidorPorSiape(ArrayList<Usuario> usuarios, String siape) {
     for(Usuario usuario: usuarios) {
       if(usuario instanceof Servidor) {
@@ -86,7 +84,6 @@ public class Grafica extends Operacoes {
     }
     return null;
   }
-
   public Aluno buscaAlunoPorRga(ArrayList<Usuario> usuarios, String rga) {
     for(Usuario usuario: usuarios) {
       if(usuario instanceof Aluno) {
@@ -97,15 +94,12 @@ public class Grafica extends Operacoes {
     }
     return null;
   }
-
-
   public Usuario buscarUsuario(ArrayList<Usuario> usuarios, String cpf) {
     for(Usuario usuario: usuarios) {
       if(usuario.getCpf().equals(cpf)) { return usuario; }
     }
     return null;
   }
-
   public int selecionarOpcaoDeEditarUsuario() {
     String mensagem = "1 - Editar Nome\n";
     mensagem += "2 - Editar CPF\n";
@@ -113,7 +107,6 @@ public class Grafica extends Operacoes {
     mensagem += "4 - Voltar\n\n";
     return Integer.parseInt(JOptionPane.showInputDialog(mensagem));
   }
-
   public void editarNomeDoUsuario(ArrayList<Usuario> usuarios) {
     Usuario usuario = buscarUsuario(usuarios);
     if(usuario == null) {
@@ -166,7 +159,6 @@ public class Grafica extends Operacoes {
       JOptionPane.showMessageDialog(null, "RGA Atualizado com sucesso.");
     }
   }
-
   /* Exemplares */
   public int selecionarOpcaoDeExemplares() {
     String mensagem = "1 - Cadastrar\n";
@@ -179,6 +171,43 @@ public class Grafica extends Operacoes {
     return Integer.parseInt(opcao);
   }
   public Exemplar criarExemplar() {
+    String titulo = JOptionPane.showInputDialog("Título: ");
+    String[] tipos = { "Livro", "Mídia", "Digital"};
+    int tipo = JOptionPane.showOptionDialog(null, "Qual tipo de Exemplar você deseja criar?", "Biblioteca", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, tipos, tipos[0]);
+    if(tipo == 1) {
+      String tipoArquivo = JOptionPane.showInputDialog("Tipo de Arquivo: ");
+      return new Midia(titulo,tipoArquivo);
+    } else if(tipo == 2){
+      return new Digital(titulo);
+    }
+    String ano = JOptionPane.showInputDialog("Ano: ");
+    return new Livro(titulo, ano);
+  }
+
+  public Exemplar buscarExemplarPorCodigo(ArrayList<Exemplar> acervo) {
+    String codigo = JOptionPane.showInputDialog("Código do Exemplar: ");
+    for(Exemplar exemplar: acervo) {
+      if(exemplar.getId() == Integer.parseInt(codigo)) {
+        return exemplar;
+      }
+    }
     return null;
+  }
+  public Exemplar buscarExemplarPorCodigo(ArrayList<Exemplar> acervo, int codigo) {
+    for(Exemplar exemplar: acervo) {
+      if(exemplar.getId() == codigo) {
+        return exemplar;
+      }
+    }
+    return null;
+  }
+
+  public int selecionarOpcaoDeEditarExemplar() {
+    String saida = "1 - Editar Título\n";
+    saida += "2 - Editar Ano/Tipo de arquivo\n";
+    saida += "3 - Adicionar categoria";
+    saida += "4 - Remover Categoria\n";
+    saida += "5 - Voltar\n\n";
+    return 0;
   }
 }
