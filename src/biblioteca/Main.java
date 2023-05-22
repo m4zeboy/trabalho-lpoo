@@ -12,6 +12,8 @@ public class Main {
   public static void main(String[] args) {
     ArrayList<Usuario> usuarios = new ArrayList<>();
     ArrayList<Exemplar> acervo = new ArrayList<>();
+    ArrayList<Categoria> categorias = new ArrayList<>();
+
     Operacoes operacoes = new Grafica();
 
     Semente.semear(usuarios, acervo);
@@ -36,7 +38,7 @@ public class Main {
                   if(usuario != null) {
                     JOptionPane.showMessageDialog(null, usuario);
                   } else {
-                    JOptionPane.showMessageDialog(null,Operacoes.MENSAGEM_USUARIO_NAO_ENCONTRADO);
+                    JOptionPane.showMessageDialog(null,Operacoes.USUARIO_NAO_ENCONTRADO);
                   }
                 break;
               case 3:
@@ -67,7 +69,7 @@ public class Main {
                       break;
                     default:
                       /* opção invalida */
-                      JOptionPane.showMessageDialog(null, Operacoes.MENSAGEM_OPCAO_INVALIDA);
+                      JOptionPane.showMessageDialog(null, Operacoes.OPCAO_INVALIDA);
                       break;
 
                   }
@@ -80,7 +82,7 @@ public class Main {
                 continuarUsuarios = false;
                 break;
               default:
-                JOptionPane.showMessageDialog(null, Operacoes.MENSAGEM_OPCAO_INVALIDA);
+                JOptionPane.showMessageDialog(null, Operacoes.OPCAO_INVALIDA);
                 break;
             }
           }
@@ -100,7 +102,7 @@ public class Main {
                 /* consultar por codigo */
                 Exemplar temp = operacoes.buscarExemplarPorCodigo(acervo);
                 if(temp == null) {
-                  JOptionPane.showMessageDialog(null, "Exemplar não encontrado.");
+                  JOptionPane.showMessageDialog(null, Operacoes.EXEMPLAR_NAO_ENCONTRADO);
                   return;
                 }
                 JOptionPane.showMessageDialog(null, temp);
@@ -116,9 +118,11 @@ public class Main {
                   switch (opcaoEditarExemplar) {
                     case 1:
                       /* editar título */
+                      operacoes.editarTituloDoExemplar(acervo);
                       break;
                     case 2:
                       /* editar ano ou tipo de arquivo */
+                      operacoes.editarAnoOuTipoDeArquivoDoExemplar(acervo);
                       break;
                     case 3:
                       /* adicionar categoria */
@@ -131,24 +135,59 @@ public class Main {
                       continuarEditarExemplares = false;
                       break;
                     default:
-                      JOptionPane.showMessageDialog(null, Operacoes.MENSAGEM_OPCAO_INVALIDA);
+                      JOptionPane.showMessageDialog(null, Operacoes.OPCAO_INVALIDA);
                       break;
                   }
                 }
+
                 break;
               case 5:
                 /* listar todos os exemplares */
+                operacoes.listarExemplares(acervo);
                 break;
               case 6:
                 continuarExemplares = false;
                 break;
               default:
-                JOptionPane.showMessageDialog(null, Operacoes.MENSAGEM_OPCAO_INVALIDA);
+                JOptionPane.showMessageDialog(null, Operacoes.OPCAO_INVALIDA);
                 break;
             }
           }
           break;
         case 3:
+          /* categorias */
+          boolean continuarCategorias = true;
+          while(continuarCategorias) {
+            int opcaoDeCategorias = operacoes.selecionarOpcaoDeCategorias();
+            switch (opcaoDeCategorias) {
+              case 1:
+                /* criar categoria */
+                Categoria nova = operacoes.criarCategoria(categorias);
+                if(nova != null) {
+                  categorias.add(nova);
+                  JOptionPane.showMessageDialog(null,"Categoria criada com código #" + nova.getId() + ".");
+                }
+                break;
+              case 2:
+                /* pesquisar por codigo */
+                break;
+              case 3:
+                /* excluir categorias */
+                break;
+              case 4:
+                /* editar categorias */
+                break;
+              case 5:
+                /* listar categorias */
+                break;
+              case 6:
+                continuarCategorias = false;
+                break;
+              default:
+                JOptionPane.showMessageDialog(null, Operacoes.OPCAO_INVALIDA);
+                break;
+            }
+          }
           break;
         case 4:
           break;
@@ -160,7 +199,7 @@ public class Main {
           continuar = false;
           break;
         default:
-          JOptionPane.showMessageDialog(null, Operacoes.MENSAGEM_OPCAO_INVALIDA);
+          JOptionPane.showMessageDialog(null, Operacoes.OPCAO_INVALIDA);
           break;
       }
     }

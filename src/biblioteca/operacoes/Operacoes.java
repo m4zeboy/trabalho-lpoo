@@ -1,5 +1,6 @@
 package biblioteca.operacoes;
 
+import biblioteca.Categoria;
 import biblioteca.exemplar.Exemplar;
 import biblioteca.usuario.Aluno;
 import biblioteca.usuario.Servidor;
@@ -8,8 +9,9 @@ import biblioteca.usuario.Usuario;
 import java.util.ArrayList;
 
 public abstract class  Operacoes {
-  public static String MENSAGEM_USUARIO_NAO_ENCONTRADO = "Usuário não encontrado.";
-  public static String MENSAGEM_OPCAO_INVALIDA = "Opção Inválida.";
+  public static String USUARIO_NAO_ENCONTRADO = "Usuário não encontrado.";
+  public static String EXEMPLAR_NAO_ENCONTRADO = "Exemplar não encontrado.";
+  public static String OPCAO_INVALIDA = "Opção Inválida.";
   public abstract int selecionarOpcaoPrincipal();
   public abstract int selecionarOpcaoDeUsuarios();
 
@@ -29,8 +31,19 @@ public abstract class  Operacoes {
   public abstract int selecionarOpcaoDeExemplares();
   public abstract Exemplar criarExemplar();
 
+  public abstract void listarExemplares(ArrayList<Exemplar>acervo);
   public abstract Exemplar buscarExemplarPorCodigo(ArrayList<Exemplar> acervo);
   public abstract Exemplar buscarExemplarPorCodigo(ArrayList<Exemplar> acervo, int codigo);
 
   public abstract int selecionarOpcaoDeEditarExemplar();
+  public abstract void editarTituloDoExemplar(ArrayList<Exemplar> acervo);
+  public abstract void editarAnoOuTipoDeArquivoDoExemplar(ArrayList<Exemplar> acervo);
+
+  /* Categorias */
+  public abstract int selecionarOpcaoDeCategorias();
+
+  public abstract Categoria buscarCategoriaPorNome(ArrayList<Categoria> categorias, String nome);
+  public abstract Categoria criarCategoria(ArrayList<Categoria> categorias);
+
+  public abstract void listarCategorias(ArrayList<Categoria> categorias);
 }
