@@ -1,5 +1,6 @@
 package biblioteca;
 
+import biblioteca.exemplar.Exemplar;
 import biblioteca.operacoes.Grafica;
 import biblioteca.operacoes.Operacoes;
 import biblioteca.usuario.Usuario;
@@ -10,9 +11,10 @@ import java.util.ArrayList;
 public class Main {
   public static void main(String[] args) {
     ArrayList<Usuario> usuarios = new ArrayList<>();
+    ArrayList<Exemplar> acervo = new ArrayList<>();
     Operacoes operacoes = new Grafica();
 
-    Semente.semear(usuarios);
+    Semente.semear(usuarios, acervo);
 
     boolean continuar = true;
     while(continuar) {
@@ -25,7 +27,7 @@ public class Main {
             switch (opcaoDeUsuarios) {
               case 1:
                 /* cadastrar usuário */
-                Usuario novo = operacoes.criarUsuario();
+                Usuario novo = operacoes.criarUsuario(usuarios);
                 usuarios.add(novo);
                 break;
               case 2:
@@ -34,7 +36,7 @@ public class Main {
                   if(usuario != null) {
                     JOptionPane.showMessageDialog(null, usuario);
                   } else {
-                    JOptionPane.showMessageDialog(null,operacoes.MENSAGEM_USUARIO_NAO_ENCONTRADO);
+                    JOptionPane.showMessageDialog(null,Operacoes.MENSAGEM_USUARIO_NAO_ENCONTRADO);
                   }
                 break;
               case 3:
@@ -65,7 +67,7 @@ public class Main {
                       break;
                     default:
                       /* opção invalida */
-                      JOptionPane.showMessageDialog(null, operacoes.MENSAGEM_OPCAO_INVALIDA);
+                      JOptionPane.showMessageDialog(null, Operacoes.MENSAGEM_OPCAO_INVALIDA);
                       break;
 
                   }
@@ -78,7 +80,7 @@ public class Main {
                 continuarUsuarios = false;
                 break;
               default:
-                JOptionPane.showMessageDialog(null, operacoes.MENSAGEM_OPCAO_INVALIDA);
+                JOptionPane.showMessageDialog(null, Operacoes.MENSAGEM_OPCAO_INVALIDA);
                 break;
             }
           }
@@ -90,15 +92,49 @@ public class Main {
             switch (opcaoDeExemplares) {
               case 1:
                 /* cadastrar exemplar */
+                Exemplar novo = operacoes.criarExemplar();
+                acervo.add(novo);
+                JOptionPane.showMessageDialog(null, "Exemplar criado com código #" +novo.getId() + ".");
                 break;
               case 2:
                 /* consultar por codigo */
+                Exemplar temp = operacoes.buscarExemplarPorCodigo(acervo);
+                if(temp == null) {
+                  JOptionPane.showMessageDialog(null, "Exemplar não encontrado.");
+                  return;
+                }
+                JOptionPane.showMessageDialog(null, temp);
                 break;
               case 3:
                 /* excluir exemplar */
                 break;
               case 4:
                 /* editar exemplar */
+                boolean continuarEditarExemplares = true;
+                while(continuarEditarExemplares) {
+                  int opcaoEditarExemplar = operacoes.selecionarOpcaoDeEditarExemplar();
+                  switch (opcaoEditarExemplar) {
+                    case 1:
+                      /* editar título */
+                      break;
+                    case 2:
+                      /* editar ano ou tipo de arquivo */
+                      break;
+                    case 3:
+                      /* adicionar categoria */
+                      break;
+                    case  4:
+                      /* remover categoria */
+                      break;
+                    case 5:
+                      /* voltar */
+                      continuarEditarExemplares = false;
+                      break;
+                    default:
+                      JOptionPane.showMessageDialog(null, Operacoes.MENSAGEM_OPCAO_INVALIDA);
+                      break;
+                  }
+                }
                 break;
               case 5:
                 /* listar todos os exemplares */
@@ -107,7 +143,7 @@ public class Main {
                 continuarExemplares = false;
                 break;
               default:
-                JOptionPane.showMessageDialog(null, operacoes.MENSAGEM_OPCAO_INVALIDA);
+                JOptionPane.showMessageDialog(null, Operacoes.MENSAGEM_OPCAO_INVALIDA);
                 break;
             }
           }
@@ -124,7 +160,7 @@ public class Main {
           continuar = false;
           break;
         default:
-          JOptionPane.showMessageDialog(null, operacoes.MENSAGEM_OPCAO_INVALIDA);
+          JOptionPane.showMessageDialog(null, Operacoes.MENSAGEM_OPCAO_INVALIDA);
           break;
       }
     }
