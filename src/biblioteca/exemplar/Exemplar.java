@@ -10,6 +10,10 @@ public abstract class Exemplar {
         this.titulo = titulo;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public String getTitulo() {
         return titulo;
     }
