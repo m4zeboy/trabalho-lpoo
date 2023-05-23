@@ -251,6 +251,38 @@ public class Grafica extends Operacoes {
     }
   }
 
+  public void adicionarCategoriaAoExemplar(ArrayList<Exemplar> acervo, ArrayList<Categoria> categorias) {
+    Exemplar temp = buscarExemplarPorCodigo(acervo);
+    if(temp == null) {
+      JOptionPane.showMessageDialog(null, Operacoes.EXEMPLAR_NAO_ENCONTRADO);
+      return;
+    }
+    String nomeCategoria = JOptionPane.showInputDialog("Nome da categoria: ");
+    Categoria categoria = buscarCategoriaPorNome(categorias, nomeCategoria);
+    if(categoria == null) {
+      JOptionPane.showMessageDialog(null, Operacoes.CATEGORIA_NAO_ENCONTRADA);
+      return;
+    }
+    temp.adicionarCategoria(categoria);
+    JOptionPane.showMessageDialog(null, "Categoria " + categoria.getNome() + " adicionada ao exemplar " + temp.getTitulo() + ".");
+  }
+
+  public void removerCategoriaDoExemplar(ArrayList<Exemplar> acervo, ArrayList<Categoria> categorias) {
+    Exemplar temp = buscarExemplarPorCodigo(acervo);
+    if(temp == null) {
+      JOptionPane.showMessageDialog(null, Operacoes.EXEMPLAR_NAO_ENCONTRADO);
+      return;
+    }
+    String nomeCategoria = JOptionPane.showInputDialog("Nome da categoria: ");
+    Categoria categoria = buscarCategoriaPorNome(categorias, nomeCategoria);
+    if(categoria == null) {
+      JOptionPane.showMessageDialog(null, Operacoes.CATEGORIA_NAO_ENCONTRADA);
+      return;
+    }
+    temp.getCategorias().remove(categoria);
+    JOptionPane.showMessageDialog(null, "Categoria " + categoria.getNome() + " removida do exemplar " + temp.getTitulo() + ".");
+  }
+
   /* Categorias */
   public int selecionarOpcaoDeCategorias() {
     String mensagem = "1 - Cadastrar\n";
@@ -281,6 +313,19 @@ public class Grafica extends Operacoes {
   }
 
   public void listarCategorias(ArrayList<Categoria> categorias) {
+    String saida =  "=============== LISTA DE CATEGORIAS ===============\n";
+    for(Categoria categoria: categorias) {
+      saida += categoria;
+      saida +=      "====================================================\n";
+    }
+    JOptionPane.showMessageDialog(null, saida);
+  }
 
+  public Categoria buscarCategoriaPorCodigo(ArrayList<Categoria> categorias) {
+    int codigo = Integer.parseInt(JOptionPane.showInputDialog(null, "Código da categoria: "));
+    for(Categoria categoria: categorias) {
+      if(categoria.getId() == codigo) return categoria;
+    }
+    return null;
   }
 }

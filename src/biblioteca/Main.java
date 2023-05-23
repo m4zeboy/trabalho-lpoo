@@ -16,7 +16,7 @@ public class Main {
 
     Operacoes operacoes = new Grafica();
 
-    Semente.semear(usuarios, acervo);
+    Semente.semear(usuarios, acervo, categorias);
 
     boolean continuar = true;
     while(continuar) {
@@ -126,9 +126,11 @@ public class Main {
                       break;
                     case 3:
                       /* adicionar categoria */
+                      operacoes.adicionarCategoriaAoExemplar(acervo, categorias);
                       break;
                     case  4:
                       /* remover categoria */
+                      operacoes.removerCategoriaDoExemplar(acervo,categorias);
                       break;
                     case 5:
                       /* voltar */
@@ -170,6 +172,9 @@ public class Main {
                 break;
               case 2:
                 /* pesquisar por codigo */
+                Categoria temp = operacoes.buscarCategoriaPorCodigo(categorias);
+                if(temp == null) JOptionPane.showMessageDialog(null, Operacoes.CATEGORIA_NAO_ENCONTRADA);
+                else JOptionPane.showMessageDialog(null, temp);
                 break;
               case 3:
                 /* excluir categorias */
@@ -179,6 +184,7 @@ public class Main {
                 break;
               case 5:
                 /* listar categorias */
+                operacoes.listarCategorias(categorias);
                 break;
               case 6:
                 continuarCategorias = false;

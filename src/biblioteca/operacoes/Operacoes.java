@@ -12,6 +12,7 @@ public abstract class  Operacoes {
   public static String USUARIO_NAO_ENCONTRADO = "Usuário não encontrado.";
   public static String EXEMPLAR_NAO_ENCONTRADO = "Exemplar não encontrado.";
   public static String OPCAO_INVALIDA = "Opção Inválida.";
+  public static String CATEGORIA_NAO_ENCONTRADA = "Categoria não encontrada.";
   public abstract int selecionarOpcaoPrincipal();
   public abstract int selecionarOpcaoDeUsuarios();
 
@@ -39,6 +40,9 @@ public abstract class  Operacoes {
   public abstract void editarTituloDoExemplar(ArrayList<Exemplar> acervo);
   public abstract void editarAnoOuTipoDeArquivoDoExemplar(ArrayList<Exemplar> acervo);
 
+  public abstract void adicionarCategoriaAoExemplar(ArrayList<Exemplar> acervo, ArrayList<Categoria> categorias);
+  public abstract void removerCategoriaDoExemplar(ArrayList<Exemplar> acervo, ArrayList<Categoria> categorias);
+
   /* Categorias */
   public abstract int selecionarOpcaoDeCategorias();
 
@@ -46,4 +50,5 @@ public abstract class  Operacoes {
   public abstract Categoria criarCategoria(ArrayList<Categoria> categorias);
 
   public abstract void listarCategorias(ArrayList<Categoria> categorias);
+  public abstract Categoria buscarCategoriaPorCodigo(ArrayList<Categoria> categorias);
 }
