@@ -51,4 +51,10 @@ public abstract class  Operacoes {
 
   public abstract void listarCategorias(ArrayList<Categoria> categorias);
   public abstract Categoria buscarCategoriaPorCodigo(ArrayList<Categoria> categorias);
+
+  public abstract void excluirCategoria(ArrayList<Categoria> categorias,ArrayList<Exemplar> acervo);
+  public abstract void editarCategoria(ArrayList<Categoria> categorias);
+
+  /* Emprestimos */
+  public abstract int selecionarOpcaoDeEmprestimos();
 }

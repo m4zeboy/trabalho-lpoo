@@ -316,7 +316,7 @@ public class Grafica extends Operacoes {
     String saida =  "=============== LISTA DE CATEGORIAS ===============\n";
     for(Categoria categoria: categorias) {
       saida += categoria;
-      saida +=      "====================================================\n";
+      saida +=      "==================================================\n";
     }
     JOptionPane.showMessageDialog(null, saida);
   }
@@ -327,5 +327,43 @@ public class Grafica extends Operacoes {
       if(categoria.getId() == codigo) return categoria;
     }
     return null;
+  }
+
+  public void excluirCategoria(ArrayList<Categoria> categorias,ArrayList<Exemplar> acervo) {
+    Categoria temp = buscarCategoriaPorCodigo(categorias);
+    if(temp == null) {
+      JOptionPane.showMessageDialog(null, Operacoes.CATEGORIA_NAO_ENCONTRADA);
+      return;
+    }
+    for(Exemplar exemplar: acervo) {
+      if(exemplar.getCategorias().contains(temp)) {
+        JOptionPane.showMessageDialog(null, "Não é possível excluir a categoria, existe exemplares que pertencem a essa categoria.");
+        return;
+      }
+    }
+    categorias.remove(temp);
+    JOptionPane.showMessageDialog(null, "Categoria " + temp.getNome() + " excluida.");
+  }
+
+  public void editarCategoria(ArrayList<Categoria> categorias) {
+    Categoria temp = buscarCategoriaPorCodigo(categorias);
+    if(temp == null) {
+      JOptionPane.showMessageDialog(null, Operacoes.CATEGORIA_NAO_ENCONTRADA);
+      return;
+    }
+    String novoNome = JOptionPane.showInputDialog("Novo nome da categoria: ");
+    temp.setNome(novoNome);
+    JOptionPane.showMessageDialog(null, "Categoria editada com sucesso.");
+  }
+
+  /* emprestimos */
+  public int selecionarOpcaoDeEmprestimos() {
+    String mensagem = "1 - Emprestar\n";
+    mensagem += "2 - Consultar status de um empréstimo\n";
+    mensagem += "3 - Devolver\n";
+    mensagem += "4 - Renovar\n";
+    mensagem += "5 - Listar todos os empréstimos\n";
+    mensagem += "6 - Voltar\n\n";
+    return Integer.parseInt(JOptionPane.showInputDialog(mensagem));
   }
 }

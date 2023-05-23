@@ -178,9 +178,11 @@ public class Main {
                 break;
               case 3:
                 /* excluir categorias */
+                operacoes.excluirCategoria(categorias, acervo);
                 break;
               case 4:
                 /* editar categorias */
+                operacoes.editarCategoria(categorias);
                 break;
               case 5:
                 /* listar categorias */
@@ -196,6 +198,31 @@ public class Main {
           }
           break;
         case 4:
+          boolean continuarEmprestimos = true;
+          while(continuarEmprestimos) {
+            int opcaoDeEmprestimos = operacoes.selecionarOpcaoDeEmprestimos();
+            switch (opcaoDeEmprestimos) {
+              case 1:
+                /* emprestar */
+                break;
+              case 2:
+                /* consultar status de um empréstimo */
+                break;
+              case 3:
+                /* devolver */
+                break;
+              case 4:
+                /* renovar */
+                break;
+              case 5:
+                /* listar todos os emprestimos */
+                break;
+              case 6:
+                /* voltar */
+                continuarEmprestimos = false;
+                break;
+            }
+          }
           break;
         case 5:
           break;
