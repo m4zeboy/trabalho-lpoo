@@ -1,6 +1,7 @@
 package biblioteca.usuario;
 
 public class Aluno extends Usuario {
+  public static int tempoDeEmprestimo = 7;
   private int rga;
 
   public Aluno(String nome, String cpf, int rga) {

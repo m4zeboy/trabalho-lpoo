@@ -1,6 +1,7 @@
 package biblioteca.usuario;
 
 public class Servidor extends Usuario {
+  public static int tempoDeEmprestimo = 14;
   private int siape;
   public Servidor(String nome, String cpf, int siape) {
     super(nome, cpf);
