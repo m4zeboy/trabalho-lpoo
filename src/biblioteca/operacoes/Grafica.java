@@ -1,6 +1,7 @@
 package biblioteca.operacoes;
 
 import biblioteca.Categoria;
+import biblioteca.Emprestimo;
 import biblioteca.exemplar.Digital;
 import biblioteca.exemplar.Exemplar;
 import biblioteca.exemplar.Livro;
@@ -10,6 +11,7 @@ import biblioteca.usuario.Servidor;
 import biblioteca.usuario.Usuario;
 
 import javax.swing.JOptionPane;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Grafica extends Operacoes {
@@ -61,6 +63,9 @@ public class Grafica extends Operacoes {
     return new Aluno(nome,cpf,rga);
   }
   public void listarUsuarios(ArrayList<Usuario> usuarios) {
+    if(usuarios.size() == 0) {
+      JOptionPane.showMessageDialog(null, "Não há usuários.");
+    }
     String saida = "================ LISTA DE USUÁRIOS ===============\n";
     for(Usuario usuario: usuarios) {
       saida += usuario.toString();
@@ -186,6 +191,9 @@ public class Grafica extends Operacoes {
   }
 
   public void listarExemplares(ArrayList<Exemplar> acervo) {
+    if(acervo.size() == 0) {
+      JOptionPane.showMessageDialog(null, "Não há exemplares.");
+    }
     String saida = "==================== ACERVO ====================\n";
     for(Exemplar exemplar: acervo) {
       saida += exemplar.toString();
@@ -313,6 +321,9 @@ public class Grafica extends Operacoes {
   }
 
   public void listarCategorias(ArrayList<Categoria> categorias) {
+    if(categorias.size() == 0) {
+      JOptionPane.showMessageDialog(null, "Não há categorias.");
+    }
     String saida =  "=============== LISTA DE CATEGORIAS ===============\n";
     for(Categoria categoria: categorias) {
       saida += categoria;
@@ -365,5 +376,38 @@ public class Grafica extends Operacoes {
     mensagem += "5 - Listar todos os empréstimos\n";
     mensagem += "6 - Voltar\n\n";
     return Integer.parseInt(JOptionPane.showInputDialog(mensagem));
+  }
+
+  public Emprestimo emprestar(ArrayList<Exemplar> acervo, ArrayList<Usuario> usuarios, ArrayList<Emprestimo> emprestimos) {
+    Usuario usuario = buscarUsuario(usuarios);
+    if(usuario == null) {
+      JOptionPane.showMessageDialog(null, Operacoes.USUARIO_NAO_ENCONTRADO);
+      return null;
+    }
+    /* verificar se o usuário tem emprestimo em atraso */
+    Exemplar exemplar = buscarExemplarPorCodigo(acervo);
+    if(exemplar == null) {
+      JOptionPane.showMessageDialog(null, Operacoes.EXEMPLAR_NAO_ENCONTRADO);
+      return null;
+    }
+    /* verificar se o exemplar está disponivel */
+    if(exemplar.estaDisponivel(emprestimos)) {
+      return new Emprestimo(usuario,exemplar, LocalDate.now());
+    } else {
+      JOptionPane.showMessageDialog(null, "O exemplar não está disponível para empréstimo.");
+      return null;
+    }
+  }
+
+  public void listarEmprestimos(ArrayList<Emprestimo> emprestimos) {
+    if(emprestimos.size() == 0) {
+      JOptionPane.showMessageDialog(null, "Não há empréstimos.");
+    }
+    String saida = "=============== LISTA DE EMPRÉSTIMOS ===============\n";
+    for(Emprestimo emprestimo: emprestimos) {
+      saida += emprestimo;
+      saida +=     "====================================================\n";
+    }
+    JOptionPane.showMessageDialog(null, saida);
   }
 }

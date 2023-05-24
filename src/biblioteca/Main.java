@@ -13,10 +13,11 @@ public class Main {
     ArrayList<Usuario> usuarios = new ArrayList<>();
     ArrayList<Exemplar> acervo = new ArrayList<>();
     ArrayList<Categoria> categorias = new ArrayList<>();
+    ArrayList<Emprestimo> emprestimos = new ArrayList<>();
 
     Operacoes operacoes = new Grafica();
 
-    Semente.semear(usuarios, acervo, categorias);
+    Semente.semear(usuarios, acervo, categorias, emprestimos);
 
     boolean continuar = true;
     while(continuar) {
@@ -204,6 +205,10 @@ public class Main {
             switch (opcaoDeEmprestimos) {
               case 1:
                 /* emprestar */
+                Emprestimo emprestimo = operacoes.emprestar(acervo, usuarios, emprestimos);
+                if(emprestimo != null) {
+                  emprestimos.add(emprestimo);
+                }
                 break;
               case 2:
                 /* consultar status de um empréstimo */
@@ -216,6 +221,7 @@ public class Main {
                 break;
               case 5:
                 /* listar todos os emprestimos */
+                operacoes.listarEmprestimos(emprestimos);
                 break;
               case 6:
                 /* voltar */

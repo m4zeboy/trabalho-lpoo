@@ -1,6 +1,7 @@
 package biblioteca.operacoes;
 
 import biblioteca.Categoria;
+import biblioteca.Emprestimo;
 import biblioteca.exemplar.Exemplar;
 import biblioteca.usuario.Aluno;
 import biblioteca.usuario.Servidor;
@@ -57,4 +58,7 @@ public abstract class  Operacoes {
 
   /* Emprestimos */
   public abstract int selecionarOpcaoDeEmprestimos();
+
+  public abstract Emprestimo emprestar(ArrayList<Exemplar> acervo, ArrayList<Usuario> usuarios, ArrayList<Emprestimo> emprestimos);
+  public abstract void listarEmprestimos(ArrayList<Emprestimo> emprestimos);
 }
