@@ -8,10 +8,11 @@ import biblioteca.usuario.Aluno;
 import biblioteca.usuario.Servidor;
 import biblioteca.usuario.Usuario;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Semente {
-  public static void semear(ArrayList<Usuario> usuarios, ArrayList<Exemplar> acervo, ArrayList<Categoria> categorias) {
+  public static void semear(ArrayList<Usuario> usuarios, ArrayList<Exemplar> acervo, ArrayList<Categoria> categorias, ArrayList<Emprestimo> emprestimos) {
     Aluno moises = new Aluno("Moises","1234",1);
     Servidor henrique = new Servidor("Henrique", "3245",3);
     Servidor joao = new Servidor("João", "2643",4);
@@ -55,6 +56,12 @@ public class Semente {
     acervo.add(ebookHabitosAtomicos);
     acervo.add(bastardosInglorios);
     acervo.add(jobs);
+
+    Emprestimo moisesJobs = new Emprestimo(moises, jobs, LocalDate.of(2023, 05,16));
+    Emprestimo henriqueSDA = new Emprestimo(henrique, senhorDosAneis, LocalDate.of(2023, 05, 20));
+
+    emprestimos.add(moisesJobs);
+    emprestimos.add(henriqueSDA);
 
   }
 }
