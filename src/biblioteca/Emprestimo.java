@@ -5,6 +5,7 @@ import biblioteca.usuario.Aluno;
 import biblioteca.usuario.Servidor;
 import biblioteca.usuario.Usuario;
 
+import javax.swing.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Locale;
@@ -29,7 +30,9 @@ public class Emprestimo {
       this.vencimento = dataEmprestimo.plusDays(Servidor.tempoDeEmprestimo);
     }
   }
-
+  public int getId() {
+      return id;
+  }
   public Usuario getUsuario() {
     return usuario;
   }
@@ -38,12 +41,27 @@ public class Emprestimo {
     return exemplar;
   }
 
-  public void devolver() {
+  public boolean devolver() {
     if(dataDevolucao == null) {
       dataDevolucao = LocalDate.now();
+      return true;
+    } else {
+      JOptionPane.showMessageDialog(null, "O empréstimo já foi devolvido.");
+      return false;
     }
   }
 
+  public void renovar() {
+    if(getStatus().equals("Aguardando Devolução")) {
+      if(usuario instanceof Aluno) {
+        this.vencimento = vencimento.plusDays(Aluno.tempoDeEmprestimo);
+      } else if(usuario instanceof Servidor) {
+        this.vencimento = vencimento.plusDays(Servidor.tempoDeEmprestimo);
+      }
+    } else {
+      JOptionPane.showMessageDialog(null, "Não é possível renovar esse empréstimo.");
+    }
+  }
   public String getStatus() {
     LocalDate hoje = LocalDate.now();
     if(dataDevolucao == null) {
