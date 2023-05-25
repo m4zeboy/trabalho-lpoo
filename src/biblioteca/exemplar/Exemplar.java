@@ -62,4 +62,12 @@ public abstract class Exemplar {
     return getStatus(emprestimos).equals("Disponível");
   }
 
+  public boolean temEmprestmos(ArrayList<Emprestimo> emprestimos) {
+    for(Emprestimo emprestimo: emprestimos) {
+      if(emprestimo.getExemplar().equals(this)) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
