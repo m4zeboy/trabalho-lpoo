@@ -1,5 +1,8 @@
 package biblioteca.usuario;
 
+import biblioteca.Emprestimo;
+
+import java.util.ArrayList;
 import java.util.Random;
 
 public abstract class Usuario {
@@ -37,5 +40,22 @@ public abstract class Usuario {
     saida += "Nome: " + this.nome + "\n";
     saida += "CPF: " + this.cpf + "\n";
     return saida;
+  }
+
+  public boolean temEmprestimo(ArrayList<Emprestimo> emprestimos) {
+    for(Emprestimo emprestimo: emprestimos) {
+      if(emprestimo.getUsuario().equals(this)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  public boolean temEmprestimoEmAtraso(ArrayList<Emprestimo> emprestimos) {
+    for(Emprestimo emprestimo: emprestimos) {
+      if(emprestimo.getUsuario().equals(this)) {
+        if(emprestimo.getStatus().equals("Em atraso")) return true;
+      }
+    }
+    return false;
   }
 }
