@@ -1,13 +1,11 @@
 package biblioteca;
 
 import biblioteca.exemplar.Exemplar;
-import biblioteca.operacoes.Grafica;
-import biblioteca.operacoes.Operacoes;
 import biblioteca.usuario.Usuario;
 
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
-
+import biblioteca.operacoes.*;
 public class Main {
   public static void main(String[] args) {
     ArrayList<Usuario> usuarios = new ArrayList<>();
@@ -43,8 +41,8 @@ public class Main {
                   }
                 break;
               case 3:
-                /* excluir usuário */
-
+                /* TODO excluir usuário */
+                operacoes.excluirUsuario(usuarios, emprestimos);
                 break;
               case 4:
                 /* editar usuário */
@@ -109,7 +107,7 @@ public class Main {
                 JOptionPane.showMessageDialog(null, temp);
                 break;
               case 3:
-                /* excluir exemplar */
+                /* TODO excluir exemplar */
                 break;
               case 4:
                 /* editar exemplar */
@@ -208,19 +206,19 @@ public class Main {
                 Emprestimo emprestimo = operacoes.emprestar(acervo, usuarios, emprestimos);
                 if(emprestimo != null) {
                   emprestimos.add(emprestimo);
+                  JOptionPane.showMessageDialog(null, "Exemplar " + emprestimo.getExemplar() + " emprestado para o usuário " + emprestimo.getUsuario() + ".");
                 }
                 break;
               case 2:
-                /* consultar status de um empréstimo */
+                operacoes.consultaStatusDeUmEmprestimo(emprestimos);
                 break;
               case 3:
-                /* devolver */
+                operacoes.devolverEmprestimo(emprestimos);
                 break;
               case 4:
-                /* renovar */
+                operacoes.renovarEmprestimo(emprestimos);
                 break;
               case 5:
-                /* listar todos os emprestimos */
                 operacoes.listarEmprestimos(emprestimos);
                 break;
               case 6:
@@ -231,6 +229,7 @@ public class Main {
           }
           break;
         case 5:
+          /* TODO menu para reservas */
           break;
         case 6:
           break;

@@ -116,7 +116,7 @@ public class Grafica extends Operacoes {
   public void editarNomeDoUsuario(ArrayList<Usuario> usuarios) {
     Usuario usuario = buscarUsuario(usuarios);
     if(usuario == null) {
-      JOptionPane.showMessageDialog(null, USUARIO_NAO_ENCONTRADO);
+      JOptionPane.showMessageDialog(null, Operacoes.USUARIO_NAO_ENCONTRADO);
       return;
     }
     String novoNome = JOptionPane.showInputDialog("Novo Nome: ");
@@ -126,7 +126,7 @@ public class Grafica extends Operacoes {
   public void editarCPFDoUsuario(ArrayList<Usuario> usuarios) {
     Usuario usuario = buscarUsuario(usuarios);
     if(usuario == null) {
-      JOptionPane.showMessageDialog(null, USUARIO_NAO_ENCONTRADO);
+      JOptionPane.showMessageDialog(null, Operacoes.USUARIO_NAO_ENCONTRADO);
       return;
     }
     String novoCPF = JOptionPane.showInputDialog("Novo CPF: ");
@@ -142,7 +142,7 @@ public class Grafica extends Operacoes {
   public void editarRGAOuSIAPEDoUsuario(ArrayList<Usuario> usuarios) {
     Usuario usuario = buscarUsuario(usuarios);
     if(usuario == null) {
-      JOptionPane.showMessageDialog(null, USUARIO_NAO_ENCONTRADO);
+      JOptionPane.showMessageDialog(null, Operacoes.USUARIO_NAO_ENCONTRADO);
       return;
     }
     if(usuario instanceof Servidor) {
@@ -165,6 +165,23 @@ public class Grafica extends Operacoes {
       JOptionPane.showMessageDialog(null, "RGA Atualizado com sucesso.");
     }
   }
+
+  public void excluirUsuario(ArrayList<Usuario> usuarios, ArrayList<Emprestimo> emprestimos) {
+    Usuario usuario = buscarUsuario(usuarios);
+    if(usuario == null) {
+      JOptionPane.showMessageDialog(null, Operacoes.USUARIO_NAO_ENCONTRADO);
+      return;
+    }
+    if(usuario.temEmprestimo(emprestimos)) {
+      JOptionPane.showMessageDialog(null, "Não é possivel excluir o usuário pois, ele tem empréstimos em seu nome.");
+      return;
+    }
+    /* TODO verificar se o usuario tem reservas em seu nome */
+
+    usuarios.remove(usuario);
+    JOptionPane.showMessageDialog(null, "Usuário #" + usuario.getId() + " excluido.");
+  }
+
   /* Exemplares */
   public int selecionarOpcaoDeExemplares() {
     String mensagem = "1 - Cadastrar\n";
@@ -291,6 +308,21 @@ public class Grafica extends Operacoes {
     JOptionPane.showMessageDialog(null, "Categoria " + categoria.getNome() + " removida do exemplar " + temp.getTitulo() + ".");
   }
 
+  public void excluirExemplar(ArrayList<Exemplar> acervo, ArrayList<Emprestimo> emprestimos) {
+    Exemplar exemplar = buscarExemplarPorCodigo(acervo);
+    if(exemplar == null) {
+      JOptionPane.showMessageDialog(null, Operacoes.EXEMPLAR_NAO_ENCONTRADO);
+      return;
+    }
+    if(exemplar.temEmprestmos(emprestimos)) {
+      JOptionPane.showMessageDialog(null, "Não é possivel excluir o exemplar pois, ele tem empréstimos associados.");
+      return;
+    }
+    /* TODO verificar se exemplar tem reservas associadas */
+    acervo.remove(exemplar);
+    JOptionPane.showMessageDialog(null, "Exemplar Removido.");
+  }
+
   /* Categorias */
   public int selecionarOpcaoDeCategorias() {
     String mensagem = "1 - Cadastrar\n";
@@ -384,7 +416,10 @@ public class Grafica extends Operacoes {
       JOptionPane.showMessageDialog(null, Operacoes.USUARIO_NAO_ENCONTRADO);
       return null;
     }
-    /* verificar se o usuário tem emprestimo em atraso */
+    if(usuario.temEmprestimoEmAtraso(emprestimos)) {
+      JOptionPane.showMessageDialog(null, "Não é possível emprestar pois o usuário tem empréstimos em atraso.");
+      return null;
+    }
     Exemplar exemplar = buscarExemplarPorCodigo(acervo);
     if(exemplar == null) {
       JOptionPane.showMessageDialog(null, Operacoes.EXEMPLAR_NAO_ENCONTRADO);
@@ -392,6 +427,12 @@ public class Grafica extends Operacoes {
     }
     /* verificar se o exemplar está disponivel */
     if(exemplar.estaDisponivel(emprestimos)) {
+      /* TODO
+      * tem reservas
+      *   se a proxima reserva está em nome do requerente do emprestimo -> emprestar
+      *  nao tem reservas
+      *   emprestar
+      * */
       return new Emprestimo(usuario,exemplar, LocalDate.now());
     } else {
       JOptionPane.showMessageDialog(null, "O exemplar não está disponível para empréstimo.");
@@ -409,5 +450,45 @@ public class Grafica extends Operacoes {
       saida +=     "====================================================\n";
     }
     JOptionPane.showMessageDialog(null, saida);
+  }
+  public Emprestimo buscarEmprestimoPorCodigo(ArrayList<Emprestimo> emprestimos) {
+    String codigo = JOptionPane.showInputDialog(null, "Código do empréstimo: ");
+    for(Emprestimo emprestimo: emprestimos) {
+      if(emprestimo.getId() == Integer.parseInt(codigo)) {
+        return emprestimo;
+      }
+    }
+    return null;
+  }
+
+  public void consultaStatusDeUmEmprestimo(ArrayList<Emprestimo> emprestimos) {
+    Emprestimo emprestimo = buscarEmprestimoPorCodigo(emprestimos);
+    if(emprestimo == null) {
+      JOptionPane.showMessageDialog(null, Operacoes.EMPRESTIMO_NAO_ENCONTRADO);
+      return;
+    }
+    JOptionPane.showMessageDialog(null, emprestimo);
+  }
+
+  public void devolverEmprestimo(ArrayList<Emprestimo> emprestimos) {
+    Emprestimo emprestimo = buscarEmprestimoPorCodigo(emprestimos);
+    if(emprestimo == null) {
+      JOptionPane.showMessageDialog(null, Operacoes.EMPRESTIMO_NAO_ENCONTRADO);
+      return;
+    }
+    if(emprestimo.devolver()) {
+      JOptionPane.showMessageDialog(null, "Empréstimo #" + emprestimo.getId() + " devolvido.");
+    }
+  }
+
+  public void renovarEmprestimo(ArrayList<Emprestimo> emprestimos) {
+    Emprestimo emprestimo = buscarEmprestimoPorCodigo(emprestimos);
+    if(emprestimo == null) {
+      JOptionPane.showMessageDialog(null, Operacoes.EMPRESTIMO_NAO_ENCONTRADO);
+      return;
+    }
+    /* TODO verificar se tem reservas previstas para o exemplar */
+    emprestimo.renovar();
+    JOptionPane.showMessageDialog(null, "Emprestimo #" + emprestimo.getId() + " renovado.");
   }
 }
