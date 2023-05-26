@@ -1,5 +1,6 @@
 package biblioteca;
 
+import biblioteca.emprestimo.Emprestimo;
 import biblioteca.exemplar.Digital;
 import biblioteca.exemplar.Exemplar;
 import biblioteca.exemplar.Livro;

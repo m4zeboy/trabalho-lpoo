@@ -1,5 +1,6 @@
 package biblioteca;
 
+import biblioteca.emprestimo.Emprestimo;
 import biblioteca.exemplar.Exemplar;
 import biblioteca.usuario.Usuario;
 
@@ -42,7 +43,7 @@ public class Main {
                 break;
               case 3:
                 /* TODO excluir usuário */
-                operacoes.excluirUsuario(usuarios, emprestimos);
+                operacoes.excluirUsuario(usuarios);
                 break;
               case 4:
                 /* editar usuário */
@@ -203,7 +204,7 @@ public class Main {
             switch (opcaoDeEmprestimos) {
               case 1:
                 /* emprestar */
-                Emprestimo emprestimo = operacoes.emprestar(acervo, usuarios, emprestimos);
+                Emprestimo emprestimo = operacoes.emprestar(acervo, usuarios);
                 if(emprestimo != null) {
                   emprestimos.add(emprestimo);
                   JOptionPane.showMessageDialog(null, "Exemplar " + emprestimo.getExemplar() + " emprestado para o usuário " + emprestimo.getUsuario() + ".");
@@ -225,11 +226,38 @@ public class Main {
                 /* voltar */
                 continuarEmprestimos = false;
                 break;
+              default:
+                JOptionPane.showMessageDialog(null, Operacoes.OPCAO_INVALIDA);
+                break;
             }
           }
           break;
         case 5:
           /* TODO menu para reservas */
+          boolean continuarReservas = true;
+          while(continuarReservas) {
+            int opcaoDeReservas = operacoes.selecionarOpcaoDeReservas();
+            switch (opcaoDeReservas) {
+              case 1:
+                /* TODO Reservar*/
+                break;
+              case 2:
+                /* TODO Consultar status de uma reserva */
+                break;
+              case 3:
+                /* TODO Cancelar */
+                break;
+              case 4:
+                /* TODO Listar reservas ativas para um exemplar */
+                break;
+              case 5:
+                /* TODO voltar */
+                break;
+              default:
+                JOptionPane.showMessageDialog(null, Operacoes.OPCAO_INVALIDA);
+                break;
+            }
+          }
           break;
         case 6:
           break;

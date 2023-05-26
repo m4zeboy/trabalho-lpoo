@@ -1,7 +1,7 @@
 package biblioteca.operacoes;
 
 import biblioteca.Categoria;
-import biblioteca.Emprestimo;
+import biblioteca.emprestimo.Emprestimo;
 import biblioteca.exemplar.Exemplar;
 import biblioteca.usuario.Aluno;
 import biblioteca.usuario.Servidor;
@@ -31,7 +31,7 @@ public abstract class Operacoes {
     public abstract void editarCPFDoUsuario(ArrayList<Usuario> usuarios);
     public abstract void editarRGAOuSIAPEDoUsuario(ArrayList<Usuario> usuarios);
 
-    public abstract void excluirUsuario(ArrayList<Usuario> usuarios, ArrayList<Emprestimo> emprestimos);
+    public abstract void excluirUsuario(ArrayList<Usuario> usuarios);
     public abstract int selecionarOpcaoDeExemplares();
     public abstract Exemplar criarExemplar();
 
@@ -46,7 +46,7 @@ public abstract class Operacoes {
     public abstract void adicionarCategoriaAoExemplar(ArrayList<Exemplar> acervo, ArrayList<Categoria> categorias);
     public abstract void removerCategoriaDoExemplar(ArrayList<Exemplar> acervo, ArrayList<Categoria> categorias);
 
-    public abstract void excluirExemplar(ArrayList<Exemplar> acervo, ArrayList<Emprestimo> emprestimos);
+    public abstract void excluirExemplar(ArrayList<Exemplar> acervo);
 
     /* Categorias */
     public abstract int selecionarOpcaoDeCategorias();
@@ -63,7 +63,7 @@ public abstract class Operacoes {
     /* Emprestimos */
     public abstract int selecionarOpcaoDeEmprestimos();
 
-    public abstract Emprestimo emprestar(ArrayList<Exemplar> acervo, ArrayList<Usuario> usuarios, ArrayList<Emprestimo> emprestimos);
+    public abstract Emprestimo emprestar(ArrayList<Exemplar> acervo, ArrayList<Usuario> usuarios);
     public abstract void listarEmprestimos(ArrayList<Emprestimo> emprestimos);
 
     public abstract Emprestimo buscarEmprestimoPorCodigo(ArrayList<Emprestimo> emprestimos);
@@ -72,4 +72,7 @@ public abstract class Operacoes {
     public abstract void devolverEmprestimo(ArrayList<Emprestimo> emprestimos);
 
     public abstract void renovarEmprestimo(ArrayList<Emprestimo> emprestimos);
+
+    /* Reservas */
+    public abstract int selecionarOpcaoDeReservas();
 }
