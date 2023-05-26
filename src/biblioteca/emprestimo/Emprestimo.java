@@ -1,4 +1,4 @@
-package biblioteca;
+package biblioteca.emprestimo;
 
 import biblioteca.exemplar.Exemplar;
 import biblioteca.usuario.Aluno;
@@ -6,18 +6,19 @@ import biblioteca.usuario.Servidor;
 import biblioteca.usuario.Usuario;
 
 import javax.swing.*;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Locale;
 import java.util.Random;
 
 public class Emprestimo {
+  public static double valorPorDiaDeAtraso = 2.50;
   private int id;
   private Usuario usuario;
   private Exemplar exemplar;
   private LocalDate dataEmprestimo;
   private LocalDate vencimento;
   private LocalDate dataDevolucao;
+
+  private Multa multa;
 
   public Emprestimo(Usuario usuario, Exemplar exemplar, LocalDate dataEmprestimo) {
     this.id = new Random().nextInt(10000);
@@ -41,12 +42,22 @@ public class Emprestimo {
     return exemplar;
   }
 
+  public LocalDate getVencimento() {
+    return vencimento;
+  }
+
+  public LocalDate getDataDevolucao() {
+    return dataDevolucao;
+  }
+
   public boolean devolver() {
     if(dataDevolucao == null) {
       dataDevolucao = LocalDate.now();
+      if(getStatus().equals("Devolvido com atraso")) {
+        this.multa = new Multa(this);
+      }
       return true;
     } else {
-      JOptionPane.showMessageDialog(null, "O empréstimo já foi devolvido.");
       return false;
     }
   }
@@ -79,6 +90,10 @@ public class Emprestimo {
     }
   }
 
+  public Multa getMulta() {
+    return multa;
+  }
+
   public String toString() {
     String saida = "Empréstimo #" + id + "\n";
     saida += "Usuário: " + usuario.getNome() + "\n";
@@ -88,6 +103,9 @@ public class Emprestimo {
     saida += "Vencimento: " + vencimento + "\n";
     if(dataDevolucao != null) {
       saida += "Data da devolução: "+ dataDevolucao + "\n";
+    }
+    if(multa != null) {
+      saida += multa;
     }
     return saida;
   }
