@@ -1,6 +1,5 @@
 package biblioteca.emprestimo;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.Random;
@@ -28,7 +27,7 @@ public class Multa {
         String saida = "Multa #" + id + "\n";
         saida += "Data: " + data + "\n";
         saida += "Valor: " + valor + "\n";
-        saida += "Empréstimo: " + emprestimo.getId() + "\n";
+        saida += emprestimo + "\n";
         saida += "Dias em atraso: " + diasAtraso + "\n";
         return saida;
     }

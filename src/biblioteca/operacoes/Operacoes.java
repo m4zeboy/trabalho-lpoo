@@ -1,6 +1,7 @@
 package biblioteca.operacoes;
 
 import biblioteca.Categoria;
+import biblioteca.Reserva;
 import biblioteca.emprestimo.Emprestimo;
 import biblioteca.exemplar.Exemplar;
 import biblioteca.usuario.Aluno;
@@ -75,4 +76,8 @@ public abstract class Operacoes {
 
     /* Reservas */
     public abstract int selecionarOpcaoDeReservas();
+
+    public abstract Reserva reservar(ArrayList<Reserva> reservas, ArrayList<Usuario> usuarios, ArrayList<Exemplar> acervo);
+
+    public abstract Reserva buscarReservaPorCodigo(ArrayList<Reserva> reservas);
 }

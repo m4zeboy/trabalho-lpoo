@@ -96,8 +96,8 @@ public class Emprestimo {
 
   public String toString() {
     String saida = "Empréstimo #" + id + "\n";
-    saida += "Usuário: " + usuario.getNome() + "\n";
-    saida += "Exemplar: " + exemplar.getTitulo() + "\n";
+    saida += usuario.getNome() + "\n";
+    saida += exemplar.getTitulo() + "\n";
     saida += "Status: " + getStatus() + "\n";
     saida += "Data do Empréstimo: " + dataEmprestimo + "\n";
     saida += "Vencimento: " + vencimento + "\n";

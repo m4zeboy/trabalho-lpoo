@@ -1,6 +1,7 @@
 package biblioteca.operacoes;
 
 import biblioteca.Categoria;
+import biblioteca.Reserva;
 import biblioteca.emprestimo.Emprestimo;
 import biblioteca.exemplar.Digital;
 import biblioteca.exemplar.Exemplar;
@@ -172,12 +173,10 @@ public class Grafica extends Operacoes {
       JOptionPane.showMessageDialog(null, Operacoes.USUARIO_NAO_ENCONTRADO);
       return;
     }
-    if(usuario.temEmprestimo()) {
-      JOptionPane.showMessageDialog(null, "Não é possivel excluir o usuário pois, ele tem empréstimos em seu nome.");
+    if(usuario.temEmprestimo() || usuario.temReservas()) {
+      JOptionPane.showMessageDialog(null, "Não é possivel excluir o usuário pois, ele tem empréstimos ou reservas em seu nome.");
       return;
     }
-    /* TODO verificar se o usuario tem reservas em seu nome */
-
     usuarios.remove(usuario);
     JOptionPane.showMessageDialog(null, "Usuário #" + usuario.getId() + " excluido.");
   }
@@ -314,11 +313,10 @@ public class Grafica extends Operacoes {
       JOptionPane.showMessageDialog(null, Operacoes.EXEMPLAR_NAO_ENCONTRADO);
       return;
     }
-    if(exemplar.temEmprestmos()) {
-      JOptionPane.showMessageDialog(null, "Não é possivel excluir o exemplar pois, ele tem empréstimos associados.");
+    if(exemplar.temEmprestimos() || exemplar.temReservas()) {
+      JOptionPane.showMessageDialog(null, "Não é possivel excluir o exemplar pois, ele tem empréstimos ou reservas associados.");
       return;
     }
-    /* TODO verificar se exemplar tem reservas associadas */
     acervo.remove(exemplar);
     JOptionPane.showMessageDialog(null, "Exemplar Removido.");
   }
@@ -426,21 +424,22 @@ public class Grafica extends Operacoes {
       return null;
     }
     /* verificar se o exemplar está disponivel */
-    if(exemplar.estaDisponivel()) {
-      /* TODO
-      * tem reservas
-      *   se a proxima reserva está em nome do requerente do emprestimo -> emprestar
-      *  nao tem reservas
-      *   emprestar
-      * */
-      Emprestimo emprestimo = new Emprestimo(usuario,exemplar, LocalDate.now());
-      usuario.adicionarEmprestimo(emprestimo);
-      exemplar.adicionarEmprestimo(emprestimo);
-      return emprestimo;
-    } else {
+    if(!exemplar.estaDisponivel()) {
       JOptionPane.showMessageDialog(null, "O exemplar não está disponível para empréstimo.");
       return null;
     }
+    if(exemplar.temReservasAtivas()) {
+      Reserva proxima = exemplar.getProximaReserva();
+      if(!proxima.getUsuario().equals(usuario)) {
+        JOptionPane.showMessageDialog(null, "Outro usuário já reservou esse exemplar.");
+        return null;
+      }
+    }
+    Emprestimo emprestimo = new Emprestimo(usuario,exemplar, LocalDate.now());
+    usuario.adicionarEmprestimo(emprestimo);
+    exemplar.adicionarEmprestimo(emprestimo);
+    return emprestimo;
+
   }
 
   public void listarEmprestimos(ArrayList<Emprestimo> emprestimos) {
@@ -494,7 +493,10 @@ public class Grafica extends Operacoes {
       JOptionPane.showMessageDialog(null, Operacoes.EMPRESTIMO_NAO_ENCONTRADO);
       return;
     }
-    /* TODO verificar se tem reservas previstas para o exemplar */
+    if(emprestimo.getExemplar().temReservasAtivas()) {
+      JOptionPane.showMessageDialog(null, "Não é possível renovar o empréstimo pois o exemplar já está reservado.");
+      return;
+    }
     emprestimo.renovar();
     JOptionPane.showMessageDialog(null, "Emprestimo #" + emprestimo.getId() + " renovado.");
   }
@@ -505,8 +507,56 @@ public class Grafica extends Operacoes {
     mensagem += "2 - Consultar status de uma reserva\n";
     mensagem += "3 - Cancelar\n";
     mensagem += "4 - Listar reservas ativas para um exemplar\n";
-    mensagem += "5 - Voltar\\nn";
+    mensagem += "5 - Voltar\n\n";
     String opcao = JOptionPane.showInputDialog(mensagem);
     return Integer.parseInt(opcao);
+  }
+
+  public Reserva reservar(ArrayList<Reserva> reservas, ArrayList<Usuario> usuarios, ArrayList<Exemplar> acervo) {
+    Usuario usuario = buscarUsuario(usuarios);
+    if(usuario == null) {
+      JOptionPane.showMessageDialog(null, Operacoes.USUARIO_NAO_ENCONTRADO);
+      return null;
+    }
+    Exemplar exemplar = buscarExemplarPorCodigo(acervo);
+    if(exemplar == null) {
+      JOptionPane.showMessageDialog(null, Operacoes.EXEMPLAR_NAO_ENCONTRADO);
+      return null;
+    }
+    if(exemplar instanceof Digital) {
+      JOptionPane.showMessageDialog(null, "Um exemplar do tipo digital está sempre disponível, não é necessário reservar ele.");
+      return null;
+    }
+    LocalDate dataExpiracao;
+    if(exemplar.estaDisponivel()) {
+      dataExpiracao = LocalDate.now().plusDays(1);
+    } else {
+      /* tem reservas */
+      if(exemplar.temReservasAtivas()) {
+        Reserva ultimaReserva = exemplar.getUltimaReserva();
+        dataExpiracao = ultimaReserva.getDataExpiracao().plusDays(1);
+      } else {
+        Emprestimo temp = exemplar.getEmprestimoAtual();
+        dataExpiracao = temp.getVencimento().plusDays(1);
+      }
+    }
+    if(usuario.temReservasAtivasNoPeriodo(LocalDate.now(), dataExpiracao)) {
+      JOptionPane.showMessageDialog(null, "O usuário já tem reservas no período de hoje até o dia " + dataExpiracao + ".");
+      return null;
+    }
+    Reserva reserva = new Reserva(usuario, exemplar, LocalDate.now(), dataExpiracao);
+    usuario.adicionarReserva(reserva);
+    exemplar.adcionarReserva(reserva);
+    return reserva;
+  }
+
+  public Reserva buscarReservaPorCodigo(ArrayList<Reserva> reservas) {
+    String codigo = JOptionPane.showInputDialog("Código da reserva: ");
+    for(Reserva reserva: reservas) {
+      if(reserva.getId() == Integer.parseInt(codigo)) {
+        return reserva;
+      }
+    }
+    return null;
   }
 }

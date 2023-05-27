@@ -7,12 +7,13 @@ import biblioteca.usuario.Usuario;
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import biblioteca.operacoes.*;
-public class Main {
+public class Biblioteca {
   public static void main(String[] args) {
     ArrayList<Usuario> usuarios = new ArrayList<>();
     ArrayList<Exemplar> acervo = new ArrayList<>();
     ArrayList<Categoria> categorias = new ArrayList<>();
     ArrayList<Emprestimo> emprestimos = new ArrayList<>();
+    ArrayList<Reserva> reservas = new ArrayList<>();
 
     Operacoes operacoes = new Grafica();
 
@@ -42,7 +43,6 @@ public class Main {
                   }
                 break;
               case 3:
-                /* TODO excluir usuário */
                 operacoes.excluirUsuario(usuarios);
                 break;
               case 4:
@@ -108,7 +108,7 @@ public class Main {
                 JOptionPane.showMessageDialog(null, temp);
                 break;
               case 3:
-                /* TODO excluir exemplar */
+                operacoes.excluirExemplar(acervo);
                 break;
               case 4:
                 /* editar exemplar */
@@ -233,16 +233,25 @@ public class Main {
           }
           break;
         case 5:
-          /* TODO menu para reservas */
           boolean continuarReservas = true;
           while(continuarReservas) {
             int opcaoDeReservas = operacoes.selecionarOpcaoDeReservas();
             switch (opcaoDeReservas) {
               case 1:
-                /* TODO Reservar*/
+                  Reserva reserva = operacoes.reservar(reservas, usuarios, acervo);
+                  if(reserva != null) {
+                    reservas.add(reserva);
+                    JOptionPane.showMessageDialog(null, "Reserva criada com código #" + reserva.getId() + ".");
+                  }
                 break;
               case 2:
                 /* TODO Consultar status de uma reserva */
+                reserva = operacoes.buscarReservaPorCodigo(reservas);
+                if(reserva != null) {
+                  JOptionPane.showMessageDialog(null, reserva);
+                } else {
+                  JOptionPane.showMessageDialog(null, "Reserva não encontrada.");
+                }
                 break;
               case 3:
                 /* TODO Cancelar */
@@ -252,6 +261,7 @@ public class Main {
                 break;
               case 5:
                 /* TODO voltar */
+                continuarReservas = false;
                 break;
               default:
                 JOptionPane.showMessageDialog(null, Operacoes.OPCAO_INVALIDA);
