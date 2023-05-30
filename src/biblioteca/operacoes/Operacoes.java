@@ -80,4 +80,6 @@ public abstract class Operacoes {
     public abstract Reserva reservar(ArrayList<Reserva> reservas, ArrayList<Usuario> usuarios, ArrayList<Exemplar> acervo);
 
     public abstract Reserva buscarReservaPorCodigo(ArrayList<Reserva> reservas);
+    public abstract void cancelarReserva(ArrayList<Reserva> reservas);
+    public abstract void listarReservasAtivasParaUmExemplar(ArrayList<Exemplar> acervo);
 }

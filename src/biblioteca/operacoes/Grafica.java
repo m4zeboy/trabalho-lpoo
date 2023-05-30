@@ -3,6 +3,7 @@ package biblioteca.operacoes;
 import biblioteca.Categoria;
 import biblioteca.Reserva;
 import biblioteca.emprestimo.Emprestimo;
+import biblioteca.emprestimo.Multa;
 import biblioteca.exemplar.Digital;
 import biblioteca.exemplar.Exemplar;
 import biblioteca.exemplar.Livro;
@@ -15,7 +16,7 @@ import javax.swing.JOptionPane;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class Grafica extends Operacoes {
+public class Grafica {
   public int selecionarOpcaoPrincipal() {
     String mensagem = "1 - Gerenciar usuários\n";
     mensagem += "2 - Gerenciar exemplares\n";
@@ -166,14 +167,13 @@ public class Grafica extends Operacoes {
       JOptionPane.showMessageDialog(null, "RGA Atualizado com sucesso.");
     }
   }
-
-  public void excluirUsuario(ArrayList<Usuario> usuarios) {
+  public void excluirUsuario(ArrayList<Usuario> usuarios, ArrayList<Reserva> reservas, ArrayList<Emprestimo> emprestimos) {
     Usuario usuario = buscarUsuario(usuarios);
     if(usuario == null) {
       JOptionPane.showMessageDialog(null, Operacoes.USUARIO_NAO_ENCONTRADO);
       return;
     }
-    if(usuario.temEmprestimo() || usuario.temReservas()) {
+    if(usuario.temEmprestimo(emprestimos) || usuario.temReservas(reservas)) {
       JOptionPane.showMessageDialog(null, "Não é possivel excluir o usuário pois, ele tem empréstimos ou reservas em seu nome.");
       return;
     }
@@ -307,13 +307,13 @@ public class Grafica extends Operacoes {
     JOptionPane.showMessageDialog(null, "Categoria " + categoria.getNome() + " removida do exemplar " + temp.getTitulo() + ".");
   }
 
-  public void excluirExemplar(ArrayList<Exemplar> acervo) {
+  public void excluirExemplar(ArrayList<Exemplar> acervo, ArrayList<Emprestimo> emprestimos, ArrayList<Reserva> reservas) {
     Exemplar exemplar = buscarExemplarPorCodigo(acervo);
     if(exemplar == null) {
       JOptionPane.showMessageDialog(null, Operacoes.EXEMPLAR_NAO_ENCONTRADO);
       return;
     }
-    if(exemplar.temEmprestimos() || exemplar.temReservas()) {
+    if(exemplar.temEmprestimos(emprestimos) || exemplar.temReservas(reservas)) {
       JOptionPane.showMessageDialog(null, "Não é possivel excluir o exemplar pois, ele tem empréstimos ou reservas associados.");
       return;
     }
@@ -408,13 +408,13 @@ public class Grafica extends Operacoes {
     return Integer.parseInt(JOptionPane.showInputDialog(mensagem));
   }
 
-  public Emprestimo emprestar(ArrayList<Exemplar> acervo, ArrayList<Usuario> usuarios) {
+  public Emprestimo emprestar(ArrayList<Exemplar> acervo, ArrayList<Usuario> usuarios, ArrayList<Emprestimo> emprestimos, ArrayList<Reserva> reservas) {
     Usuario usuario = buscarUsuario(usuarios);
     if(usuario == null) {
       JOptionPane.showMessageDialog(null, Operacoes.USUARIO_NAO_ENCONTRADO);
       return null;
     }
-    if(usuario.temEmprestimoEmAtraso()) {
+    if(usuario.temEmprestimoEmAtraso(emprestimos)) {
       JOptionPane.showMessageDialog(null, "Não é possível emprestar pois o usuário tem empréstimos em atraso.");
       return null;
     }
@@ -424,20 +424,20 @@ public class Grafica extends Operacoes {
       return null;
     }
     /* verificar se o exemplar está disponivel */
-    if(!exemplar.estaDisponivel()) {
+    if(!exemplar.estaDisponivel(emprestimos)) {
       JOptionPane.showMessageDialog(null, "O exemplar não está disponível para empréstimo.");
       return null;
     }
-    if(exemplar.temReservasAtivas()) {
-      Reserva proxima = exemplar.getProximaReserva();
+    if(exemplar.temReservasAtivas(reservas)) {
+      Reserva proxima = exemplar.getProximaReserva(reservas);
       if(!proxima.getUsuario().equals(usuario)) {
         JOptionPane.showMessageDialog(null, "Outro usuário já reservou esse exemplar.");
         return null;
+      } else {
+        proxima.cancelar();
       }
     }
     Emprestimo emprestimo = new Emprestimo(usuario,exemplar, LocalDate.now());
-    usuario.adicionarEmprestimo(emprestimo);
-    exemplar.adicionarEmprestimo(emprestimo);
     return emprestimo;
 
   }
@@ -449,7 +449,7 @@ public class Grafica extends Operacoes {
     String saida = "=============== LISTA DE EMPRÉSTIMOS ===============\n";
     for(Emprestimo emprestimo: emprestimos) {
       saida += emprestimo;
-      saida +=     "====================================================\n";
+      saida +=   "====================================================\n";
     }
     JOptionPane.showMessageDialog(null, saida);
   }
@@ -478,26 +478,28 @@ public class Grafica extends Operacoes {
       JOptionPane.showMessageDialog(null, Operacoes.EMPRESTIMO_NAO_ENCONTRADO);
       return;
     }
-    if(emprestimo.devolver()) {
-      if(emprestimo.getStatus().equals("Devolvido com atraso")) {
-        JOptionPane.showMessageDialog(null, "Empréstimo devolvido com atraso. Multa de R$" + emprestimo.getMulta().getValor() + ".");
-        return;
-      }
-      JOptionPane.showMessageDialog(null, "Empréstimo #" + emprestimo.getId() + " devolvido.");
+    Multa multa = emprestimo.devolver();
+    if(multa != null) {
+      JOptionPane.showMessageDialog(null, "Empréstimo devolvido com atraso. Multa de R$" + multa.getValor() + ".");
+      return;
     }
+    JOptionPane.showMessageDialog(null, "Empréstimo #" + emprestimo.getId() + " devolvido.");
   }
 
-  public void renovarEmprestimo(ArrayList<Emprestimo> emprestimos) {
+  public void renovarEmprestimo(ArrayList<Emprestimo> emprestimos, ArrayList<Reserva> reservas) {
     Emprestimo emprestimo = buscarEmprestimoPorCodigo(emprestimos);
     if(emprestimo == null) {
       JOptionPane.showMessageDialog(null, Operacoes.EMPRESTIMO_NAO_ENCONTRADO);
       return;
     }
-    if(emprestimo.getExemplar().temReservasAtivas()) {
+    if(emprestimo.getExemplar().temReservasAtivas(reservas)) {
       JOptionPane.showMessageDialog(null, "Não é possível renovar o empréstimo pois o exemplar já está reservado.");
       return;
     }
-    emprestimo.renovar();
+    if(emprestimo.renovar() == false) {
+      JOptionPane.showMessageDialog(null, "Não é possível renovar o emprestimo.");
+      return;
+    }
     JOptionPane.showMessageDialog(null, "Emprestimo #" + emprestimo.getId() + " renovado.");
   }
 
@@ -512,10 +514,14 @@ public class Grafica extends Operacoes {
     return Integer.parseInt(opcao);
   }
 
-  public Reserva reservar(ArrayList<Reserva> reservas, ArrayList<Usuario> usuarios, ArrayList<Exemplar> acervo) {
+  public Reserva reservar(ArrayList<Reserva> reservas, ArrayList<Usuario> usuarios, ArrayList<Exemplar> acervo, ArrayList<Emprestimo> emprestimos) {
     Usuario usuario = buscarUsuario(usuarios);
     if(usuario == null) {
       JOptionPane.showMessageDialog(null, Operacoes.USUARIO_NAO_ENCONTRADO);
+      return null;
+    }
+    if(usuario.temEmprestimoEmAtraso(emprestimos)) {
+      JOptionPane.showMessageDialog(null, "Esse usuário não pode realizar reservas.");
       return null;
     }
     Exemplar exemplar = buscarExemplarPorCodigo(acervo);
@@ -527,26 +533,13 @@ public class Grafica extends Operacoes {
       JOptionPane.showMessageDialog(null, "Um exemplar do tipo digital está sempre disponível, não é necessário reservar ele.");
       return null;
     }
-    LocalDate dataExpiracao;
-    if(exemplar.estaDisponivel()) {
-      dataExpiracao = LocalDate.now().plusDays(1);
-    } else {
-      /* tem reservas */
-      if(exemplar.temReservasAtivas()) {
-        Reserva ultimaReserva = exemplar.getUltimaReserva();
-        dataExpiracao = ultimaReserva.getDataExpiracao().plusDays(1);
-      } else {
-        Emprestimo temp = exemplar.getEmprestimoAtual();
-        dataExpiracao = temp.getVencimento().plusDays(1);
-      }
-    }
-    if(usuario.temReservasAtivasNoPeriodo(LocalDate.now(), dataExpiracao)) {
+    LocalDate dataExpiracao = exemplar.calcularDataDeExpiracao(emprestimos,reservas);
+
+    if(usuario.temReservasAtivasNoPeriodo(reservas,LocalDate.now(), dataExpiracao)) {
       JOptionPane.showMessageDialog(null, "O usuário já tem reservas no período de hoje até o dia " + dataExpiracao + ".");
       return null;
     }
-    Reserva reserva = new Reserva(usuario, exemplar, LocalDate.now(), dataExpiracao);
-    usuario.adicionarReserva(reserva);
-    exemplar.adcionarReserva(reserva);
+    Reserva reserva = new Reserva(usuario, exemplar, dataExpiracao);
     return reserva;
   }
 
@@ -558,5 +551,26 @@ public class Grafica extends Operacoes {
       }
     }
     return null;
+  }
+  public void cancelarReserva(ArrayList<Reserva> reservas) {
+    Reserva reserva = buscarReservaPorCodigo(reservas);
+    if(reserva == null) {
+      JOptionPane.showMessageDialog(null, "Reserva não encontrada");
+      return;
+    }
+    if(reserva.cancelar()) {
+      JOptionPane.showMessageDialog(null, "Reserva " + reserva.getId() + " cancelada.");
+    } else {
+      JOptionPane.showMessageDialog(null, "A reserva encontra-se expirada.");
+    }
+  }
+
+  public void listarReservasAtivasParaUmExemplar(ArrayList<Exemplar> acervo, ArrayList<Reserva> reservas) {
+      String saida = "=============== RESERVAS ===============\n";
+      for(Reserva reserva: reservas) {
+        saida += reserva;
+        saida += "====================================================\n";
+      }
+      JOptionPane.showMessageDialog(null, saida);
   }
 }

@@ -3,6 +3,10 @@ package biblioteca.exemplar;
 public class Livro extends Exemplar {
     private int ano;
 
+    public Livro(int id,String titulo, int ano) {
+        super(id,titulo);
+        this.ano = ano;
+    }
     public Livro(String titulo, int ano) {
         super(titulo);
         this.ano = ano;

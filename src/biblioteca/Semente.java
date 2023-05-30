@@ -14,10 +14,10 @@ import java.util.ArrayList;
 
 public class Semente {
   public static void semear(ArrayList<Usuario> usuarios, ArrayList<Exemplar> acervo, ArrayList<Categoria> categorias, ArrayList<Emprestimo> emprestimos) {
-    Aluno moises = new Aluno("Moises","1234",1);
-    Servidor henrique = new Servidor("Henrique", "3245",3);
-    Servidor joao = new Servidor("João", "2643",4);
-    Aluno rafael = new Aluno("Rafael", "8376",2);
+    Aluno moises = new Aluno(1,"Moises","1234",1);
+    Servidor henrique = new Servidor(2,"Henrique", "3245",3);
+    Servidor joao = new Servidor(3,"João", "2643",4);
+    Aluno rafael = new Aluno(4,"Rafael", "8376",2);
 
     usuarios.add(moises);
     usuarios.add(henrique);
@@ -36,19 +36,19 @@ public class Semente {
     categorias.add(acao);
     categorias.add(fantasia);
 
-    Livro senhorDosAneis = new Livro("O Senhor dos Anéis", 1954);
+    Livro senhorDosAneis = new Livro(10,"O Senhor dos Anéis", 1954);
     senhorDosAneis.adicionarCategoria(fantasia);
 
-    Midia homemAranha3 = new Midia("Homem Aranha III", "DVD");
+    Midia homemAranha3 = new Midia(20,"Homem Aranha III", "DVD");
     homemAranha3.adicionarCategoria(acao);
 
-    Digital ebookHabitosAtomicos = new Digital("Hábitos Atomicos");
+    Digital ebookHabitosAtomicos = new Digital(30,"Hábitos Atomicos");
     ebookHabitosAtomicos.adicionarCategoria(desPessoal);
 
-    Livro jobs = new Livro("Steve Jobs", 2011);
+    Livro jobs = new Livro(40,"Steve Jobs", 2011);
     jobs.adicionarCategoria(biografia);
 
-    Midia bastardosInglorios = new Midia("Bastardos Inglorios", "DVD");
+    Midia bastardosInglorios = new Midia(50,"Bastardos Inglorios", "DVD");
     bastardosInglorios.adicionarCategoria(acao);
     bastardosInglorios.adicionarCategoria(drama);
 
@@ -58,8 +58,9 @@ public class Semente {
     acervo.add(bastardosInglorios);
     acervo.add(jobs);
 
-    Emprestimo moisesJobs = new Emprestimo(moises, jobs, LocalDate.of(2023, 05,16));
+    Emprestimo moisesJobs = new Emprestimo(moises, jobs, LocalDate.of(2023, 05,28));
     Emprestimo henriqueSDA = new Emprestimo(henrique, senhorDosAneis, LocalDate.of(2023, 05, 20));
+
 
     emprestimos.add(moisesJobs);
     emprestimos.add(henriqueSDA);

@@ -15,7 +15,7 @@ public class Biblioteca {
     ArrayList<Emprestimo> emprestimos = new ArrayList<>();
     ArrayList<Reserva> reservas = new ArrayList<>();
 
-    Operacoes operacoes = new Grafica();
+    Grafica operacoes = new Grafica();
 
     Semente.semear(usuarios, acervo, categorias, emprestimos);
 
@@ -43,7 +43,7 @@ public class Biblioteca {
                   }
                 break;
               case 3:
-                operacoes.excluirUsuario(usuarios);
+                operacoes.excluirUsuario(usuarios, reservas,emprestimos);
                 break;
               case 4:
                 /* editar usuário */
@@ -108,7 +108,7 @@ public class Biblioteca {
                 JOptionPane.showMessageDialog(null, temp);
                 break;
               case 3:
-                operacoes.excluirExemplar(acervo);
+                operacoes.excluirExemplar(acervo,emprestimos, reservas);
                 break;
               case 4:
                 /* editar exemplar */
@@ -204,7 +204,7 @@ public class Biblioteca {
             switch (opcaoDeEmprestimos) {
               case 1:
                 /* emprestar */
-                Emprestimo emprestimo = operacoes.emprestar(acervo, usuarios);
+                Emprestimo emprestimo = operacoes.emprestar(acervo, usuarios, emprestimos, reservas);
                 if(emprestimo != null) {
                   emprestimos.add(emprestimo);
                   JOptionPane.showMessageDialog(null, "Exemplar " + emprestimo.getExemplar() + " emprestado para o usuário " + emprestimo.getUsuario() + ".");
@@ -217,7 +217,7 @@ public class Biblioteca {
                 operacoes.devolverEmprestimo(emprestimos);
                 break;
               case 4:
-                operacoes.renovarEmprestimo(emprestimos);
+                operacoes.renovarEmprestimo(emprestimos, reservas);
                 break;
               case 5:
                 operacoes.listarEmprestimos(emprestimos);
@@ -238,14 +238,14 @@ public class Biblioteca {
             int opcaoDeReservas = operacoes.selecionarOpcaoDeReservas();
             switch (opcaoDeReservas) {
               case 1:
-                  Reserva reserva = operacoes.reservar(reservas, usuarios, acervo);
-                  if(reserva != null) {
-                    reservas.add(reserva);
-                    JOptionPane.showMessageDialog(null, "Reserva criada com código #" + reserva.getId() + ".");
-                  }
+                /* TODO: VERIFICAR SE O USUARIO JA TEM UMA RESERVA ATIVA PARA ESSE EXEMPLAR */
+                Reserva reserva = operacoes.reservar(reservas, usuarios, acervo,emprestimos);
+                if(reserva != null) {
+                  reservas.add(reserva);
+                  JOptionPane.showMessageDialog(null, "Reserva criada com código #" + reserva.getId() + ".");
+                }
                 break;
               case 2:
-                /* TODO Consultar status de uma reserva */
                 reserva = operacoes.buscarReservaPorCodigo(reservas);
                 if(reserva != null) {
                   JOptionPane.showMessageDialog(null, reserva);
@@ -254,13 +254,13 @@ public class Biblioteca {
                 }
                 break;
               case 3:
-                /* TODO Cancelar */
+                operacoes.cancelarReserva(reservas);
                 break;
               case 4:
                 /* TODO Listar reservas ativas para um exemplar */
+                operacoes.listarReservasAtivasParaUmExemplar(acervo, reservas);
                 break;
               case 5:
-                /* TODO voltar */
                 continuarReservas = false;
                 break;
               default:
