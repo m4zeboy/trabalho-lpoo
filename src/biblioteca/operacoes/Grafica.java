@@ -12,11 +12,23 @@ import biblioteca.usuario.Aluno;
 import biblioteca.usuario.Servidor;
 import biblioteca.usuario.Usuario;
 
-import javax.swing.JOptionPane;
+import javax.swing.*;
+import java.awt.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Grafica {
+
+  public void mostrarMensagemComScroll(String titulo, String mensagem) {
+    JTextArea textArea = new JTextArea(mensagem);
+    JScrollPane scrollPane = new JScrollPane(textArea);
+    textArea.setLineWrap(true);
+    textArea.setWrapStyleWord(true);
+    scrollPane.setPreferredSize( new Dimension( 500, 500 ) );
+    JOptionPane.showMessageDialog(null, scrollPane, titulo,
+            JOptionPane.YES_NO_OPTION);
+  }
+
   public int selecionarOpcaoPrincipal() {
     String mensagem = "1 - Gerenciar usuários\n";
     mensagem += "2 - Gerenciar exemplares\n";
@@ -42,7 +54,7 @@ public class Grafica {
 
     Usuario temp = buscarUsuario(usuarios, cpf);
     if(temp != null) {
-      JOptionPane.showMessageDialog(null, "Já existe um usuário com esse CPF.");
+      JOptionPane.showMessageDialog(null,"Já existe um usuário com esse CPF.");
       return null;
     }
     String[] tipos = {"Aluno", "Servidor"};
@@ -68,12 +80,12 @@ public class Grafica {
     if(usuarios.size() == 0) {
       JOptionPane.showMessageDialog(null, "Não há usuários.");
     }
-    String saida = "================ LISTA DE USUÁRIOS ===============\n";
+    String saida = "";
     for(Usuario usuario: usuarios) {
       saida += usuario.toString();
       saida += "==================================================\n";
     }
-    JOptionPane.showMessageDialog(null,saida);
+    mostrarMensagemComScroll("Lista de Usuários",saida);
   }
   public Usuario buscarUsuario(ArrayList<Usuario> usuarios) {
     String cpf = JOptionPane.showInputDialog("CPF: ");
@@ -210,12 +222,12 @@ public class Grafica {
     if(acervo.size() == 0) {
       JOptionPane.showMessageDialog(null, "Não há exemplares.");
     }
-    String saida = "==================== ACERVO ====================\n";
+    String saida = "";
     for(Exemplar exemplar: acervo) {
       saida += exemplar.toString();
       saida +=     "================================================\n";
     }
-    JOptionPane.showMessageDialog(null,saida);
+   mostrarMensagemComScroll("Acervo",saida);
   }
 
   public Exemplar buscarExemplarPorCodigo(ArrayList<Exemplar> acervo) {
@@ -354,12 +366,12 @@ public class Grafica {
     if(categorias.size() == 0) {
       JOptionPane.showMessageDialog(null, "Não há categorias.");
     }
-    String saida =  "=============== LISTA DE CATEGORIAS ===============\n";
+    String saida =  "";
     for(Categoria categoria: categorias) {
       saida += categoria;
       saida +=      "==================================================\n";
     }
-    JOptionPane.showMessageDialog(null, saida);
+    mostrarMensagemComScroll("Lista de Categorias", saida);
   }
 
   public Categoria buscarCategoriaPorCodigo(ArrayList<Categoria> categorias) {
@@ -437,7 +449,7 @@ public class Grafica {
         proxima.cancelar();
       }
     }
-    Emprestimo emprestimo = new Emprestimo(usuario,exemplar, LocalDate.now());
+    Emprestimo emprestimo = new Emprestimo(usuario,exemplar);
     return emprestimo;
 
   }
@@ -446,12 +458,12 @@ public class Grafica {
     if(emprestimos.size() == 0) {
       JOptionPane.showMessageDialog(null, "Não há empréstimos.");
     }
-    String saida = "=============== LISTA DE EMPRÉSTIMOS ===============\n";
+    String saida = "";
     for(Emprestimo emprestimo: emprestimos) {
       saida += emprestimo;
       saida +=   "====================================================\n";
     }
-    JOptionPane.showMessageDialog(null, saida);
+    mostrarMensagemComScroll("Lista de Empréstimos", saida);
   }
   public Emprestimo buscarEmprestimoPorCodigo(ArrayList<Emprestimo> emprestimos) {
     String codigo = JOptionPane.showInputDialog(null, "Código do empréstimo: ");
@@ -496,7 +508,8 @@ public class Grafica {
       JOptionPane.showMessageDialog(null, "Não é possível renovar o empréstimo pois o exemplar já está reservado.");
       return;
     }
-    if(emprestimo.renovar() == false) {
+    boolean renovou = emprestimo.renovar();
+    if(!renovou) {
       JOptionPane.showMessageDialog(null, "Não é possível renovar o emprestimo.");
       return;
     }
@@ -533,6 +546,10 @@ public class Grafica {
       JOptionPane.showMessageDialog(null, "Um exemplar do tipo digital está sempre disponível, não é necessário reservar ele.");
       return null;
     }
+    if(usuario.temReservaAtivaParaOExemplar(reservas,exemplar)) {
+      JOptionPane.showMessageDialog(null, "O usúario já tem reservas ativas para esse exemplar.");
+      return null;
+    }
     LocalDate dataExpiracao = exemplar.calcularDataDeExpiracao(emprestimos,reservas);
 
     if(usuario.temReservasAtivasNoPeriodo(reservas,LocalDate.now(), dataExpiracao)) {
@@ -558,19 +575,24 @@ public class Grafica {
       JOptionPane.showMessageDialog(null, "Reserva não encontrada");
       return;
     }
-    if(reserva.cancelar()) {
-      JOptionPane.showMessageDialog(null, "Reserva " + reserva.getId() + " cancelada.");
-    } else {
-      JOptionPane.showMessageDialog(null, "A reserva encontra-se expirada.");
-    }
+    reserva.cancelar();
+    JOptionPane.showMessageDialog(null, "Reserva " + reserva.getId() + " cancelada.");
   }
 
   public void listarReservasAtivasParaUmExemplar(ArrayList<Exemplar> acervo, ArrayList<Reserva> reservas) {
-      String saida = "=============== RESERVAS ===============\n";
+    Exemplar exemplar = buscarExemplarPorCodigo(acervo);
+    if(exemplar == null) {
+      JOptionPane.showMessageDialog(null, Operacoes.EXEMPLAR_NAO_ENCONTRADO);
+      return;
+    }
+
+    String saida = "";
       for(Reserva reserva: reservas) {
-        saida += reserva;
-        saida += "====================================================\n";
+        if(reserva.getExemplar().equals(exemplar) && reserva.estaAtiva()) {
+          saida += reserva;
+          saida += "====================================================\n";
+        }
       }
-      JOptionPane.showMessageDialog(null, saida);
+      mostrarMensagemComScroll("Lista de Reservas", saida);
   }
 }
