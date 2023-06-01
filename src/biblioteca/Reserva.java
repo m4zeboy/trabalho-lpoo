@@ -43,12 +43,8 @@ public class Reserva {
   public boolean estaAtiva() {
     return LocalDate.now().isBefore(dataExpiracao);
   }
-  public boolean cancelar() {
-    if(dataExpiracao == null) {
-      dataExpiracao = LocalDate.now();
-      return true;
-    }
-    return false;
+  public void cancelar() {
+    dataExpiracao = LocalDate.now();
   }
   public String toString() {
     String saida = "Reserva #" + id + "\n";
