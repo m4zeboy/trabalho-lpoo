@@ -207,7 +207,7 @@ public class Biblioteca {
                 Emprestimo emprestimo = operacoes.emprestar(acervo, usuarios, emprestimos, reservas);
                 if(emprestimo != null) {
                   emprestimos.add(emprestimo);
-                  JOptionPane.showMessageDialog(null, "Exemplar " + emprestimo.getExemplar() + " emprestado para o usuário " + emprestimo.getUsuario() + ".");
+                  JOptionPane.showMessageDialog(null, "Exemplar " + emprestimo.getExemplar().getTitulo() + " emprestado para o usuário " + emprestimo.getUsuario().getNome() + ".");
                 }
                 break;
               case 2:
@@ -238,7 +238,6 @@ public class Biblioteca {
             int opcaoDeReservas = operacoes.selecionarOpcaoDeReservas();
             switch (opcaoDeReservas) {
               case 1:
-                /* TODO: VERIFICAR SE O USUARIO JA TEM UMA RESERVA ATIVA PARA ESSE EXEMPLAR */
                 Reserva reserva = operacoes.reservar(reservas, usuarios, acervo,emprestimos);
                 if(reserva != null) {
                   reservas.add(reserva);
@@ -246,9 +245,9 @@ public class Biblioteca {
                 }
                 break;
               case 2:
-                reserva = operacoes.buscarReservaPorCodigo(reservas);
-                if(reserva != null) {
-                  JOptionPane.showMessageDialog(null, reserva);
+                Reserva temp = operacoes.buscarReservaPorCodigo(reservas);
+                if(temp != null) {
+                  JOptionPane.showMessageDialog(null, temp);
                 } else {
                   JOptionPane.showMessageDialog(null, "Reserva não encontrada.");
                 }
@@ -257,7 +256,6 @@ public class Biblioteca {
                 operacoes.cancelarReserva(reservas);
                 break;
               case 4:
-                /* TODO Listar reservas ativas para um exemplar */
                 operacoes.listarReservasAtivasParaUmExemplar(acervo, reservas);
                 break;
               case 5:
@@ -270,6 +268,7 @@ public class Biblioteca {
           }
           break;
         case 6:
+          /* TODO Consultar total de exemplares reservados por categoria em um período */
           break;
         case 7:
           continuar = false;
