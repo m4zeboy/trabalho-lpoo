@@ -2,6 +2,7 @@ package biblioteca.usuario;
 
 import biblioteca.Reserva;
 import biblioteca.emprestimo.Emprestimo;
+import biblioteca.exemplar.Exemplar;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,14 +20,12 @@ public abstract class Usuario {
     this.nome = nome;
     this.cpf = cpf;
   }
-
   public Usuario(String nome, String cpf) {
     this.id = new Random().nextInt(10000);
     this.nome = nome;
     this.cpf = cpf;
     this.reservas = new ArrayList<>();
   }
-
   public int getId() {
     return id;
   }
@@ -52,6 +51,14 @@ public abstract class Usuario {
     }
     return reservasAssociadas;
   }
+  public boolean temReservaAtivaParaOExemplar(ArrayList<Reserva> reservas, Exemplar exemplar) {
+    for(Reserva reserva: reservas) {
+      if(reserva.getUsuario().equals(this) && reserva.getExemplar().equals(exemplar) && reserva.estaAtiva()) {
+        return true;
+      }
+    }
+    return false;
+  }
   public boolean temReservasAtivasNoPeriodo(ArrayList<Reserva> reservas,LocalDate inicio, LocalDate fim) {
     for(Reserva reserva: reservas) {
       if(reserva.getUsuario().equals(this)) {
@@ -70,7 +77,6 @@ public abstract class Usuario {
     }
     return emprestimosAssociados;
   }
-
   public boolean temEmprestimo(ArrayList<Emprestimo> emprestimos) {
     if(getEmprestimos(emprestimos).size() > 0) return true;
     return false;
