@@ -17,11 +17,22 @@ public class Emprestimo {
   private LocalDate vencimento;
   private LocalDate dataDevolucao;
 
-  public Emprestimo(Usuario usuario, Exemplar exemplar, LocalDate dataEmprestimo) {
+  public Emprestimo(int id,Usuario usuario, Exemplar exemplar) {
+    this.id = id;
+    this.usuario = usuario;
+    this.exemplar = exemplar;
+    this.dataEmprestimo = LocalDate.now();
+    if(usuario instanceof Aluno) {
+      this.vencimento = dataEmprestimo.plusDays(Aluno.tempoDeEmprestimo);
+    } else if(usuario instanceof Servidor) {
+      this.vencimento = dataEmprestimo.plusDays(Servidor.tempoDeEmprestimo);
+    }
+  }
+  public Emprestimo(Usuario usuario, Exemplar exemplar) {
     this.id = new Random().nextInt(10000);
     this.usuario = usuario;
     this.exemplar = exemplar;
-    this.dataEmprestimo = dataEmprestimo;
+    this.dataEmprestimo = LocalDate.now();
     if(usuario instanceof Aluno) {
       this.vencimento = dataEmprestimo.plusDays(Aluno.tempoDeEmprestimo);
     } else if(usuario instanceof Servidor) {
@@ -47,6 +58,19 @@ public class Emprestimo {
     return dataDevolucao;
   }
 
+  public String getStatus() {
+    LocalDate hoje = LocalDate.now();
+    if(dataDevolucao != null) {
+      if(dataDevolucao.isAfter(vencimento)) return "Devolvido com atraso";
+      else return "Devolvido no prazo";
+    } else {
+      if(hoje.isAfter(vencimento)) return "Em atraso";
+      else return "Aguardando devolução";
+    }
+
+
+  }
+
   public Multa devolver() {
     if(dataDevolucao == null) {
       dataDevolucao = LocalDate.now();
@@ -58,27 +82,13 @@ public class Emprestimo {
   }
 
   public boolean renovar() {
-    if(getStatus().equals("Aguardando Devolução")) {
-      if(usuario instanceof Aluno) {
-        this.vencimento = vencimento.plusDays(Aluno.tempoDeEmprestimo);
-      } else if(usuario instanceof Servidor) {
-        this.vencimento = vencimento.plusDays(Servidor.tempoDeEmprestimo);
-      }
+    if(getStatus().equals("Aguardando devolução")) {
+      int dias;
+      if(usuario instanceof Servidor) dias =Servidor.tempoDeEmprestimo;
+      else dias = Aluno.tempoDeEmprestimo;
+      this.vencimento = this.vencimento.plusDays(dias);
       return true;
-    }
-    return false;
-  }
-  public String getStatus() {
-    LocalDate hoje = LocalDate.now();
-   if(dataDevolucao != null) {
-     if(dataDevolucao.isAfter(vencimento)) return "Devolvido com atraso";
-     else return "Devolvido no prazo";
-   } else {
-     if(hoje.isAfter(vencimento)) return "Em atraso";
-     else return "Aguardando devolução";
-   }
-
-
+    } else return false;
   }
   public String toString() {
     String saida = "Empréstimo #" + id + "\n";
