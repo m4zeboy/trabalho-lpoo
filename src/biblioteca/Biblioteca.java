@@ -2,6 +2,10 @@ package biblioteca;
 
 import biblioteca.emprestimo.Emprestimo;
 import biblioteca.exemplar.Exemplar;
+import biblioteca.operacoes.categorias.OperacoesDeCategoria;
+import biblioteca.operacoes.categorias.OperacoesGraficasDeCategoria;
+import biblioteca.operacoes.emprestimos.OperacoesDeEmprestimo;
+import biblioteca.operacoes.emprestimos.OperacoesGraficaDeEmprestimo;
 import biblioteca.operacoes.exemplares.OperacoesDeExemplar;
 import biblioteca.operacoes.exemplares.OperacoesGraficasDeExemplar;
 import biblioteca.operacoes.usuario.OperacoesDeUsuario;
@@ -174,13 +178,14 @@ public class Biblioteca {
           break;
         case 3:
           /* categorias */
+          OperacoesDeCategoria operacoesDeCategoria = new OperacoesGraficasDeCategoria();
           boolean continuarCategorias = true;
           while(continuarCategorias) {
-            int opcaoDeCategorias = operacoes.selecionarOpcaoDeCategorias();
+            int opcaoDeCategorias = operacoesDeCategoria.selecionarOpcao();
             switch (opcaoDeCategorias) {
               case 1:
                 /* criar categoria */
-                Categoria nova = operacoes.criarCategoria(categorias);
+                Categoria nova = operacoesDeCategoria.criar(categorias);
                 if(nova != null) {
                   categorias.add(nova);
                   JOptionPane.showMessageDialog(null,"Categoria criada com código #" + nova.getId() + ".");
@@ -188,21 +193,19 @@ public class Biblioteca {
                 break;
               case 2:
                 /* pesquisar por codigo */
-                Categoria temp = operacoes.buscarCategoriaPorCodigo(categorias);
-                if(temp == null) JOptionPane.showMessageDialog(null, OperacoesAntiga.CATEGORIA_NAO_ENCONTRADA);
-                else JOptionPane.showMessageDialog(null, temp);
+                operacoesDeCategoria.consultarPorCodigo(categorias);
                 break;
               case 3:
                 /* excluir categorias */
-                operacoes.excluirCategoria(categorias, acervo);
+                operacoesDeCategoria.excluir(categorias, acervo);
                 break;
               case 4:
                 /* editar categorias */
-                operacoes.editarCategoria(categorias);
+                operacoesDeCategoria.editar(categorias);
                 break;
               case 5:
                 /* listar categorias */
-                operacoes.listarCategorias(categorias);
+                operacoesDeCategoria.listar(categorias);
                 break;
               case 6:
                 continuarCategorias = false;
@@ -214,13 +217,14 @@ public class Biblioteca {
           }
           break;
         case 4:
+          OperacoesDeEmprestimo operacoesDeEmprestimo = new OperacoesGraficaDeEmprestimo();
           boolean continuarEmprestimos = true;
           while(continuarEmprestimos) {
-            int opcaoDeEmprestimos = operacoes.selecionarOpcaoDeEmprestimos();
+            int opcaoDeEmprestimos = operacoesDeEmprestimo.selecionarOpcao();
             switch (opcaoDeEmprestimos) {
               case 1:
                 /* emprestar */
-                Emprestimo emprestimo = operacoes.emprestar(acervo, usuarios, emprestimos, reservas);
+                Emprestimo emprestimo = operacoesDeEmprestimo.emprestar(acervo, usuarios, emprestimos, reservas);
                 if(emprestimo != null) {
                   emprestimos.add(emprestimo);
                   JOptionPane.showMessageDialog(null, "Exemplar " + emprestimo.getExemplar().getTitulo() + " emprestado para o usuário " + emprestimo.getUsuario().getNome() + ".");
