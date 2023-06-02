@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class Semente {
-  public static void semear(ArrayList<Usuario> usuarios, ArrayList<Exemplar> acervo, ArrayList<Categoria> categorias, ArrayList<Emprestimo> emprestimos) {
+  public static void semear(ArrayList<Usuario> usuarios, ArrayList<Exemplar> acervo, ArrayList<Categoria> categorias, ArrayList<Emprestimo> emprestimos, ArrayList<Reserva> reservas) {
     String[] nomes = {
             "Aaron Hicks",
             "Peggy Brown",
@@ -145,6 +145,11 @@ public class Semente {
 
     for(int i = 0; i < 10; i++) {
       emprestimos.add(new Emprestimo(i+1,usuarios.get(i), acervo.get(i)));
+    }
+
+    for(int i = 10; i < 20; i++) {
+      Usuario usuario = usuarios.get(i);
+      reservas.add(new Reserva(usuario, acervo.get(i), acervo.get(i).calcularDataDeExpiracao(emprestimos, reservas)));
     }
   }
 }
