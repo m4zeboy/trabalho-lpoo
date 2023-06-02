@@ -44,7 +44,7 @@ public abstract class OperacoesDeUsuario {
     }
     return null;
   }
-  public static Usuario consultarPorCPF(ArrayList<Usuario> usuarios, String cpf) {
+  public static Usuario buscarPorCPF(ArrayList<Usuario> usuarios, String cpf) {
     for(Usuario usuario: usuarios) {
       if(usuario.getCpf().equals(cpf)) { return usuario; }
     }
