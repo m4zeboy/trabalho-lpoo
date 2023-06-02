@@ -30,7 +30,7 @@ public class OperacoesGraficasDeUsuario extends OperacoesDeUsuario {
     String nome = JOptionPane.showInputDialog("Nome: ");
     String cpf = JOptionPane.showInputDialog("CPF: ");
 
-    Usuario temp = consultarPorCPF(usuarios, cpf);
+    Usuario temp = buscarPorCPF(usuarios, cpf);
     if(temp != null) {
       JOptionPane.showMessageDialog(null,"Já existe um usuário com esse CPF.");
       return null;
@@ -94,7 +94,7 @@ public class OperacoesGraficasDeUsuario extends OperacoesDeUsuario {
     }
     String novoCPF = JOptionPane.showInputDialog("Novo CPF: ");
     /* Verificar se já existe um usuário com esse cpf */
-    Usuario temp = consultarPorCPF(usuarios, novoCPF);
+    Usuario temp = buscarPorCPF(usuarios, novoCPF);
     if(temp != null) {
       JOptionPane.showMessageDialog(null, "Já existe um usuário com esse CPF.");
       return;
