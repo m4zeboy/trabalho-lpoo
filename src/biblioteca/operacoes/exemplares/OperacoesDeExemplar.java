@@ -21,7 +21,7 @@ public abstract class OperacoesDeExemplar {
   public abstract int selecionarOpcao();
   public abstract Exemplar criar();
   public abstract void listar(ArrayList<Exemplar> acervo);
-  public Exemplar buscarPorCodigo(ArrayList<Exemplar> acervo, int codigo) {
+  public static Exemplar buscarPorCodigo(ArrayList<Exemplar> acervo, int codigo) {
     for(Exemplar exemplar: acervo) {
       if(exemplar.getId() == codigo) {
         return exemplar;
