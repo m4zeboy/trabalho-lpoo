@@ -2,7 +2,6 @@ package biblioteca.operacoes.usuario;
 
 import biblioteca.Reserva;
 import biblioteca.emprestimo.Emprestimo;
-import biblioteca.operacoes.OperacoesAntiga;
 import biblioteca.operacoes.PainelGrafico;
 import biblioteca.usuario.Aluno;
 import biblioteca.usuario.Servidor;
@@ -79,7 +78,7 @@ public class OperacoesGraficasDeUsuario extends OperacoesDeUsuario {
   public void editarNome(ArrayList<Usuario> usuarios) {
     Usuario usuario = buscarPorCPF(usuarios);
     if(usuario == null) {
-      JOptionPane.showMessageDialog(null, OperacoesAntiga.USUARIO_NAO_ENCONTRADO);
+      JOptionPane.showMessageDialog(null, OperacoesDeUsuario.USUARIO_NAO_ENCONTRADO);
       return;
     }
     String novoNome = JOptionPane.showInputDialog("Novo Nome: ");
@@ -89,7 +88,7 @@ public class OperacoesGraficasDeUsuario extends OperacoesDeUsuario {
   public void editarCPF(ArrayList<Usuario> usuarios) {
     Usuario usuario = buscarPorCPF(usuarios);
     if(usuario == null) {
-      JOptionPane.showMessageDialog(null, OperacoesAntiga.USUARIO_NAO_ENCONTRADO);
+      JOptionPane.showMessageDialog(null, OperacoesDeUsuario.USUARIO_NAO_ENCONTRADO);
       return;
     }
     String novoCPF = JOptionPane.showInputDialog("Novo CPF: ");
@@ -105,7 +104,7 @@ public class OperacoesGraficasDeUsuario extends OperacoesDeUsuario {
   public void editarRGAOuSIAPE(ArrayList<Usuario> usuarios) {
     Usuario usuario = buscarPorCPF(usuarios);
     if(usuario == null) {
-      JOptionPane.showMessageDialog(null, OperacoesAntiga.USUARIO_NAO_ENCONTRADO);
+      JOptionPane.showMessageDialog(null, OperacoesDeUsuario.USUARIO_NAO_ENCONTRADO);
       return;
     }
     if(usuario instanceof Servidor) {
@@ -131,7 +130,7 @@ public class OperacoesGraficasDeUsuario extends OperacoesDeUsuario {
   public void excluir(ArrayList<Usuario> usuarios, ArrayList<Reserva> reservas, ArrayList<Emprestimo> emprestimos) {
     Usuario usuario = buscarPorCPF(usuarios);
     if(usuario == null) {
-      JOptionPane.showMessageDialog(null, OperacoesAntiga.USUARIO_NAO_ENCONTRADO);
+      JOptionPane.showMessageDialog(null, OperacoesDeUsuario.USUARIO_NAO_ENCONTRADO);
       return;
     }
     if(usuario.temEmprestimo(emprestimos) || usuario.temReservas(reservas)) {
