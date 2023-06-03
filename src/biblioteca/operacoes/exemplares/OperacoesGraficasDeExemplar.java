@@ -7,7 +7,6 @@ import biblioteca.exemplar.Digital;
 import biblioteca.exemplar.Exemplar;
 import biblioteca.exemplar.Livro;
 import biblioteca.exemplar.Midia;
-import biblioteca.operacoes.OperacoesAntiga;
 import biblioteca.operacoes.PainelGrafico;
 import biblioteca.operacoes.categorias.OperacoesDeCategoria;
 
@@ -55,7 +54,7 @@ public class OperacoesGraficasDeExemplar extends OperacoesDeExemplar {
     int codigo = Integer.parseInt(JOptionPane.showInputDialog("Código do exemplar: "));
     Exemplar exemplar = buscarPorCodigo(acervo,codigo);
     if(exemplar == null) {
-      JOptionPane.showMessageDialog(null, OperacoesAntiga.EXEMPLAR_NAO_ENCONTRADO);
+      JOptionPane.showMessageDialog(null, OperacoesDeExemplar.EXEMPLAR_NAO_ENCONTRADO);
       return;
     }
     if(exemplar.temEmprestimos(emprestimos) || exemplar.temReservas(reservas)) {
@@ -72,7 +71,7 @@ public class OperacoesGraficasDeExemplar extends OperacoesDeExemplar {
     int codigo = Integer.parseInt(JOptionPane.showInputDialog("Código do Exemplar: "));
     Exemplar temp = buscarPorCodigo(acervo, codigo);
     if(temp == null) {
-      JOptionPane.showMessageDialog(null, OperacoesAntiga.EXEMPLAR_NAO_ENCONTRADO);
+      JOptionPane.showMessageDialog(null, OperacoesDeExemplar.EXEMPLAR_NAO_ENCONTRADO);
       return;
     }
     String novoTitulo = JOptionPane.showInputDialog("Novo Título: ");
@@ -83,7 +82,7 @@ public class OperacoesGraficasDeExemplar extends OperacoesDeExemplar {
     int codigo = Integer.parseInt(JOptionPane.showInputDialog("Código do Exemplar: "));
     Exemplar temp = buscarPorCodigo(acervo, codigo);
     if(temp == null) {
-      JOptionPane.showMessageDialog(null, OperacoesAntiga.EXEMPLAR_NAO_ENCONTRADO);
+      JOptionPane.showMessageDialog(null, OperacoesDeExemplar.EXEMPLAR_NAO_ENCONTRADO);
       return;
     }
     if(temp instanceof Livro) {
@@ -100,13 +99,13 @@ public class OperacoesGraficasDeExemplar extends OperacoesDeExemplar {
     int codigo = Integer.parseInt(JOptionPane.showInputDialog("Código do Exemplar: "));
     Exemplar temp = buscarPorCodigo(acervo,codigo);
     if(temp == null) {
-      JOptionPane.showMessageDialog(null, OperacoesAntiga.EXEMPLAR_NAO_ENCONTRADO);
+      JOptionPane.showMessageDialog(null, OperacoesDeExemplar.EXEMPLAR_NAO_ENCONTRADO);
       return;
     }
     String nomeCategoria = JOptionPane.showInputDialog("Nome da categoria: ");
     Categoria categoria = OperacoesDeCategoria.buscarPorNome(categorias, nomeCategoria);
     if(categoria == null) {
-      JOptionPane.showMessageDialog(null, OperacoesAntiga.CATEGORIA_NAO_ENCONTRADA);
+      JOptionPane.showMessageDialog(null, OperacoesDeCategoria.CATEGORIA_NAO_ENCONTRADA);
       return;
     }
     temp.adicionarCategoria(categoria);
@@ -117,13 +116,13 @@ public class OperacoesGraficasDeExemplar extends OperacoesDeExemplar {
     int codigo = Integer.parseInt(JOptionPane.showInputDialog("Código do Exemplar: "));
     Exemplar temp = buscarPorCodigo(acervo, codigo);
     if(temp == null) {
-      JOptionPane.showMessageDialog(null, OperacoesAntiga.EXEMPLAR_NAO_ENCONTRADO);
+      JOptionPane.showMessageDialog(null, OperacoesDeExemplar.EXEMPLAR_NAO_ENCONTRADO);
       return;
     }
     String nomeCategoria = JOptionPane.showInputDialog("Nome da categoria: ");
     Categoria categoria = OperacoesDeCategoria.buscarPorNome(categorias, nomeCategoria);
     if(categoria == null) {
-      JOptionPane.showMessageDialog(null, OperacoesAntiga.CATEGORIA_NAO_ENCONTRADA);
+      JOptionPane.showMessageDialog(null, OperacoesDeCategoria.CATEGORIA_NAO_ENCONTRADA);
       return;
     }
     temp.getCategorias().remove(categoria);
