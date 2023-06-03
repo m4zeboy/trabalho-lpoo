@@ -2,7 +2,6 @@ package biblioteca.operacoes.categorias;
 
 import biblioteca.Categoria;
 import biblioteca.exemplar.Exemplar;
-import biblioteca.operacoes.OperacoesAntiga;
 import biblioteca.operacoes.PainelGrafico;
 
 import javax.swing.JOptionPane;
@@ -42,7 +41,7 @@ public class OperacoesGraficasDeCategoria extends OperacoesDeCategoria {
   public void excluir(ArrayList<Categoria> categorias, ArrayList<Exemplar> acervo) {
     Categoria temp = buscarPorCodigo(categorias);
     if(temp == null) {
-      JOptionPane.showMessageDialog(null, OperacoesAntiga.CATEGORIA_NAO_ENCONTRADA);
+      JOptionPane.showMessageDialog(null, OperacoesDeCategoria.CATEGORIA_NAO_ENCONTRADA);
       return;
     }
     for(Exemplar exemplar: acervo) {
@@ -69,7 +68,7 @@ public class OperacoesGraficasDeCategoria extends OperacoesDeCategoria {
   public void editar(ArrayList<Categoria> categorias) {
     Categoria temp = buscarPorCodigo(categorias);
     if(temp == null) {
-      JOptionPane.showMessageDialog(null, OperacoesAntiga.CATEGORIA_NAO_ENCONTRADA);
+      JOptionPane.showMessageDialog(null, OperacoesDeCategoria.CATEGORIA_NAO_ENCONTRADA);
       return;
     }
     String novoNome = JOptionPane.showInputDialog("Novo nome da categoria: ");
