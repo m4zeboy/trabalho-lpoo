@@ -1,6 +1,7 @@
 package biblioteca.emprestimo;
 
 import biblioteca.exemplar.Exemplar;
+import biblioteca.operacoes.excecoes.EmprestimoJaDevolvidoException;
 import biblioteca.usuario.Aluno;
 import biblioteca.usuario.Servidor;
 import biblioteca.usuario.Usuario;
@@ -71,12 +72,13 @@ public class Emprestimo {
 
   }
 
-  public Multa devolver() {
-    if(dataDevolucao == null) {
-      dataDevolucao = LocalDate.now();
-      if(getStatus().equals("Devolvido com atraso")) {
-        return new Multa(this);
-      }
+  public Multa devolver() throws EmprestimoJaDevolvidoException {
+    if(dataDevolucao != null) {
+      throw new EmprestimoJaDevolvidoException();
+    }
+    dataDevolucao = LocalDate.now();
+    if(getStatus().equals("Devolvido com atraso")) {
+      return new Multa(this);
     }
     return null;
   }
