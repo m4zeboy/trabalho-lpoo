@@ -3,8 +3,8 @@ package biblioteca.exemplar;
 import biblioteca.Categoria;
 import biblioteca.Reserva;
 import biblioteca.emprestimo.Emprestimo;
+import biblioteca.emprestimo.StatusDoEmprestimo;
 
-import javax.swing.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Random;
@@ -46,7 +46,7 @@ public abstract class Exemplar {
   public Emprestimo getEmprestimoAtual(ArrayList<Emprestimo> emprestimos) {
     for(Emprestimo emprestimo: emprestimos) {
       if(emprestimo.getExemplar().equals(this)) {
-        if(emprestimo.getStatus().equals("Aguardando devolução") || emprestimo.getStatus().equals("Em atraso")) {
+        if(emprestimo.getStatus() == StatusDoEmprestimo.AGUARDANDO_DEVOLUCAO || emprestimo.getStatus() == StatusDoEmprestimo.EM_ATRASO) {
           return emprestimo;
         }
       }
@@ -95,18 +95,18 @@ public abstract class Exemplar {
     }
     return null;
   }
-  public String getStatus(ArrayList<Emprestimo> emprestimos) {
+  public StatusDoExemplar getStatus(ArrayList<Emprestimo> emprestimos) {
     for(Emprestimo emprestimo: emprestimos) {
       if(emprestimo.getExemplar().equals(this)) {
-        if(emprestimo.getStatus().equals("Aguardando devolução") || emprestimo.getStatus().equals("Em atraso")) {
-          return "Emprestado";
+        if(emprestimo.getStatus() == StatusDoEmprestimo.AGUARDANDO_DEVOLUCAO || emprestimo.getStatus() == StatusDoEmprestimo.EM_ATRASO) {
+          return StatusDoExemplar.NAO_DISPONIEL;
         }
       }
     }
-    return "Disponível";
+    return StatusDoExemplar.DISPONIVEL;
   }
   public boolean estaDisponivel(ArrayList<Emprestimo> emprestimos) {
-    return getStatus(emprestimos).equals("Disponível");
+    return getStatus(emprestimos) == StatusDoExemplar.DISPONIVEL;
   }
   public LocalDate calcularDataDeExpiracao(ArrayList<Emprestimo> emprestimos, ArrayList<Reserva> reservas) {
     if(estaDisponivel(emprestimos) && !temReservasAtivas(reservas)) {
@@ -135,4 +135,9 @@ public abstract class Exemplar {
     return saida;
   }
 
+}
+
+enum StatusDoExemplar {
+  DISPONIVEL,
+  NAO_DISPONIEL
 }
