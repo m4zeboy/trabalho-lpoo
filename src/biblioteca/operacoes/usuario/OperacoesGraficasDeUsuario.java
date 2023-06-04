@@ -11,9 +11,15 @@ import javax.swing.*;
 import java.util.ArrayList;
 
 public class OperacoesGraficasDeUsuario extends OperacoesDeUsuario {
+  /* a função selecionarOpcao() mostra o menu de gerencia de usuarios para que o usuário escolha uma opção.*/
   public int selecionarOpcao() {
-    return Integer.parseInt(JOptionPane.showInputDialog(getMenu()));
+    try {
+      return Integer.parseInt(JOptionPane.showInputDialog(getMenu()));
+    } catch (NumberFormatException exception) {
+      return -1;
+    }
   }
+  /* a função listar() percorre a lista de usuários e mostra na tela em um painel com barra de rolagem. */
   public void listar(ArrayList<Usuario> usuarios) {
     if(usuarios.size() == 0) {
       JOptionPane.showMessageDialog(null, "Não há usuários.");
@@ -25,73 +31,92 @@ public class OperacoesGraficasDeUsuario extends OperacoesDeUsuario {
     }
     PainelGrafico.mostrarMensagemComScroll("Lista de Usuários",saida);
   }
-  public Usuario criar(ArrayList<Usuario> usuarios) {
-    String nome = JOptionPane.showInputDialog("Nome: ");
-    String cpf = JOptionPane.showInputDialog("CPF: ");
+  /* a função criar le os dados do usuário, instancia um novo objeto e insere-o na lista de usuários */
+  public void criar(ArrayList<Usuario> usuarios) {
+
+    String nome = LeituraDeDadosDoUsuario.lerNome();
+    String cpf = LeituraDeDadosDoUsuario.lerCpf();
 
     Usuario temp = buscarPorCPF(usuarios, cpf);
     if(temp != null) {
       JOptionPane.showMessageDialog(null,"Já existe um usuário com esse CPF.");
-      return null;
+      return;
     }
-    String[] tipos = {"Aluno", "Servidor"};
+
+    String[] tipos = { "Aluno", "Servidor" };
+
     int tipo = JOptionPane.showOptionDialog(null, "Qual tipo de Usuário você deseja criar?", "Biblioteca", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, tipos, tipos[0]);
+
     if(tipo == 1) {
-      String siape = JOptionPane.showInputDialog(null, "SIAPE: ");
-      Servidor servidorTemp = buscarPorSiape(usuarios, siape);
-      if(servidorTemp != null) {
-        JOptionPane.showMessageDialog(null, "Já existe um Servidor com esse SIAPE.");
-        return null;
-      }
-      return new Servidor(nome, cpf, siape);
-    }
-    String rga = JOptionPane.showInputDialog(null, "RGA: ");
-    Aluno alunoTemp = buscarPorRga(usuarios, rga);
-    if(alunoTemp != null) {
-      JOptionPane.showMessageDialog(null, "Já existe um Aluno com esse RGA.");
-      return null;
-    }
-    return new Aluno(nome,cpf,rga);
-  }
-  public void consultarPorCPF(ArrayList<Usuario> usuarios) {
-    String cpf = JOptionPane.showInputDialog("CPF: ");
-    for(Usuario usuario: usuarios) {
-      if(usuario.getCpf().equals(cpf)) {
-        JOptionPane.showMessageDialog(null, usuario);
+      String siape = LeituraDeDadosDoUsuario.lerSiape();
+      try {
+        int siapeInt = Integer.parseInt(siape);
+        Servidor servidorTemp = buscarPorSiape(usuarios, siapeInt);
+        if(servidorTemp != null) {
+          JOptionPane.showMessageDialog(null, "Já existe um Servidor com esse SIAPE.");
+          return;
+        }
+        usuarios.add(new Servidor(nome, cpf, siape));
+      } catch (NumberFormatException exception) {
+        JOptionPane.showMessageDialog(null, "O valor informado não é um número.");
         return;
       }
     }
-    JOptionPane.showMessageDialog(null, OperacoesDeUsuario.USUARIO_NAO_ENCONTRADO);
-  }
-  public Usuario buscarPorCPF(ArrayList<Usuario> usuarios) {
-    String cpf = JOptionPane.showInputDialog("CPF: ");
-    for(Usuario usuario: usuarios) {
-      if(usuario.getCpf().equals(cpf)) {
-        return usuario;
+    String rga = LeituraDeDadosDoUsuario.lerRga();
+    try {
+      int rgaInt = Integer.parseInt(rga);
+      Aluno alunoTemp = buscarPorRga(usuarios, rgaInt);
+      if(alunoTemp != null) {
+        JOptionPane.showMessageDialog(null, "Já existe um Aluno com esse RGA.");
+        return;
       }
+      usuarios.add(new Aluno(nome,cpf,rga));
+    } catch (NumberFormatException exception) {
+      JOptionPane.showMessageDialog(null, "O valor informado não é um número.");
     }
-    return null;
   }
+  /* a função consultarPorCPF() faz a leitura do cpf, busca por um usuário correspondente e mostra na tela seus dados caso encontre */
+  public void consultarPorCPF(ArrayList<Usuario> usuarios) {
+    String cpf = LeituraDeDadosDoUsuario.lerCpf();
+    Usuario usuario = buscarPorCPF(usuarios,cpf);
+    if(usuario == null) {
+      JOptionPane.showMessageDialog(null, OperacoesDeUsuario.USUARIO_NAO_ENCONTRADO);
+      return;
+    }
+    JOptionPane.showMessageDialog(null, usuario);
+  }
+  /* a função buscarPorCPF() faz a leitura do cpf, busca por um correspondente e se encontrar, retorna-o */
+  public Usuario buscarPorCPF(ArrayList<Usuario> usuarios) {
+    String cpf = LeituraDeDadosDoUsuario.lerCpf();
+     return buscarPorCPF(usuarios, cpf);
+  }
+  /* a função selecionarOpcaoDeEditar() mostra o menu de editar usuários para que o usuário escolha uma opção.*/
   public int selecionarOpcaoDeEditar() {
-    return Integer.parseInt(JOptionPane.showInputDialog(getMenuEditar()));
+    try {
+      return Integer.parseInt(JOptionPane.showInputDialog(getMenuEditar()));
+    } catch (NumberFormatException exception) {
+      return -1;
+    }
   }
+  /* a função editarNome busca por um usuário pelo cpf e altera o nome */
   public void editarNome(ArrayList<Usuario> usuarios) {
     Usuario usuario = buscarPorCPF(usuarios);
     if(usuario == null) {
       JOptionPane.showMessageDialog(null, OperacoesDeUsuario.USUARIO_NAO_ENCONTRADO);
       return;
     }
-    String novoNome = JOptionPane.showInputDialog("Novo Nome: ");
+    String novoNome = LeituraDeDadosDoUsuario.lerNome();
     usuario.setNome(novoNome);
     JOptionPane.showMessageDialog(null, "Nome editado com sucesso.");
   }
+  /* a função editarNome busca por um usuário pelo cpf e se não existir um usuário com o novo cpf informado, a informação é atualizada. */
   public void editarCPF(ArrayList<Usuario> usuarios) {
     Usuario usuario = buscarPorCPF(usuarios);
     if(usuario == null) {
       JOptionPane.showMessageDialog(null, OperacoesDeUsuario.USUARIO_NAO_ENCONTRADO);
       return;
     }
-    String novoCPF = JOptionPane.showInputDialog("Novo CPF: ");
+    String novoCPF = LeituraDeDadosDoUsuario.lerCpf();
     /* Verificar se já existe um usuário com esse cpf */
     Usuario temp = buscarPorCPF(usuarios, novoCPF);
     if(temp != null) {
@@ -101,6 +126,7 @@ public class OperacoesGraficasDeUsuario extends OperacoesDeUsuario {
     usuario.setCpf(novoCPF);
     JOptionPane.showMessageDialog(null, "CPF Editado com sucesso.");
   }
+  /* a função editarRGAOuSIAPE() busca por um usuário pelo cpf e de acordo com o tipo de usuário é atualizado o rga ou siape, se já existir um usuário com dado correspondente ao novo a atualização não é feita. */
   public void editarRGAOuSIAPE(ArrayList<Usuario> usuarios) {
     Usuario usuario = buscarPorCPF(usuarios);
     if(usuario == null) {
@@ -108,25 +134,36 @@ public class OperacoesGraficasDeUsuario extends OperacoesDeUsuario {
       return;
     }
     if(usuario instanceof Servidor) {
-      String novoSIAPE = JOptionPane.showInputDialog("Novo SIAPE: ");
-      Servidor servidorTemp = buscarPorSiape(usuarios, novoSIAPE);
-      if(servidorTemp != null) {
-        JOptionPane.showMessageDialog(null, "Já existe um Servidor com esse SIAPE.");
-        return;
+      String novoSIAPE = LeituraDeDadosDoUsuario.lerSiape();
+      try {
+        int novoSiapeInt = Integer.parseInt(novoSIAPE);
+        Servidor servidorTemp = buscarPorSiape(usuarios, novoSiapeInt);
+        if(servidorTemp != null) {
+          JOptionPane.showMessageDialog(null, "Já existe um Servidor com esse SIAPE.");
+          return;
+        }
+        ((Servidor) usuario).setSiape(novoSiapeInt);
+        JOptionPane.showMessageDialog(null, "SIAPE Atualizado com sucesso.");
+      } catch (NumberFormatException exception) {
+        JOptionPane.showMessageDialog(null, "O valor informado não é um número.");
       }
-      ((Servidor) usuario).setSiape(Integer.parseInt(novoSIAPE));
-      JOptionPane.showMessageDialog(null, "SIAPE Atualizado com sucesso.");
     } else {
-      String novoRGA = JOptionPane.showInputDialog("Novo RGA: ");
-      Aluno alunoTemp = buscarPorRga(usuarios, novoRGA);
-      if(alunoTemp != null) {
-        JOptionPane.showMessageDialog(null, "Já existe um Aluno com esse RGA.");
-        return;
+      String novoRGA = LeituraDeDadosDoUsuario.lerRga();
+      try {
+        int novoRgaInt = Integer.parseInt(novoRGA);
+        Aluno alunoTemp = buscarPorRga(usuarios, novoRgaInt);
+        if(alunoTemp != null) {
+          JOptionPane.showMessageDialog(null, "Já existe um Aluno com esse RGA.");
+          return;
+        }
+        ((Aluno) usuario).setRga(Integer.parseInt(novoRGA));
+        JOptionPane.showMessageDialog(null, "RGA Atualizado com sucesso.");
+      } catch (NumberFormatException exception) {
+        JOptionPane.showMessageDialog(null, "O valor informado não é um número.");
       }
-      ((Aluno) usuario).setRga(Integer.parseInt(novoRGA));
-      JOptionPane.showMessageDialog(null, "RGA Atualizado com sucesso.");
     }
   }
+  /* a função excluir() busca por um usuário pelo cpf e se ele não tiver reservas ou empréstimo, é feito a sua remoção da lista de usuários */
   public void excluir(ArrayList<Usuario> usuarios, ArrayList<Reserva> reservas, ArrayList<Emprestimo> emprestimos) {
     Usuario usuario = buscarPorCPF(usuarios);
     if(usuario == null) {
