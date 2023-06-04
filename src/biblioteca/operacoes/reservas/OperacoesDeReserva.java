@@ -31,6 +31,5 @@ public abstract class OperacoesDeReserva {
   public abstract void consultarPorCodigo(ArrayList<Reserva> reservas);
   public abstract void cancelar(ArrayList<Reserva> reservas);
   public abstract void listarReservasAtivasParaUmExemplar(ArrayList<Exemplar> acervo, ArrayList<Reserva> reservas);
-
-  public abstract void consultarTotalDeExemplaresReservadosPorCategoriaEmUmPeríodo(ArrayList<Reserva> reservas, ArrayList<Categoria> categorias);
+  public abstract void consultarTotalDeExemplaresReservadosPorCategoriaEmUmPeriodo(ArrayList<Reserva> reservas, ArrayList<Categoria> categorias);
 }
