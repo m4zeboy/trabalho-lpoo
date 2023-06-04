@@ -9,7 +9,11 @@ import java.util.ArrayList;
 
 public class OperacoesGraficasDeCategoria extends OperacoesDeCategoria {
   public int selecionarOpcao() {
-    return Integer.parseInt(JOptionPane.showInputDialog(getMenu()));
+    try {
+      return Integer.parseInt(JOptionPane.showInputDialog(getMenu()));
+    } catch (NumberFormatException exception) {
+      return -1;
+    }
   }
 
   public Categoria criar(ArrayList<Categoria> categorias) {
