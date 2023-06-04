@@ -20,7 +20,7 @@ public abstract class OperacoesDeEmprestimo {
     return mensagem;
   }
   public abstract int selecionarOpcao();
-  public abstract Emprestimo emprestar(ArrayList<Exemplar> acervo, ArrayList<Usuario> usuarios, ArrayList<Emprestimo> emprestimos, ArrayList<Reserva> reservas);
+  public abstract void emprestar(ArrayList<Exemplar> acervo, ArrayList<Usuario> usuarios, ArrayList<Emprestimo> emprestimos, ArrayList<Reserva> reservas);
   public static Emprestimo buscarPorCodigo(ArrayList<Emprestimo> emprestimos, int codigo) {
     for(Emprestimo emprestimo: emprestimos) {
       if(emprestimo.getId() == codigo) return emprestimo;

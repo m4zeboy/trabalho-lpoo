@@ -17,7 +17,6 @@ public class Emprestimo {
   private LocalDate dataEmprestimo;
   private LocalDate vencimento;
   private LocalDate dataDevolucao;
-
   public Emprestimo(int id,Usuario usuario, Exemplar exemplar) {
     this.id = id;
     this.usuario = usuario;
@@ -46,45 +45,39 @@ public class Emprestimo {
   public Usuario getUsuario() {
     return usuario;
   }
-
   public Exemplar getExemplar() {
     return exemplar;
   }
-
   public LocalDate getVencimento() {
     return vencimento;
   }
-
   public LocalDate getDataDevolucao() {
     return dataDevolucao;
   }
-
-  public String getStatus() {
+  public StatusDoEmprestimo getStatus() {
     LocalDate hoje = LocalDate.now();
     if(dataDevolucao != null) {
-      if(dataDevolucao.isAfter(vencimento)) return "Devolvido com atraso";
-      else return "Devolvido no prazo";
+      if(dataDevolucao.isAfter(vencimento)) return StatusDoEmprestimo.DEVOLVIDO_COM_ATRASO;
+      else return StatusDoEmprestimo.DEVOLVIDO_NO_PRAZO;
     } else {
-      if(hoje.isAfter(vencimento)) return "Em atraso";
-      else return "Aguardando devolução";
+      if(hoje.isAfter(vencimento)) return StatusDoEmprestimo.EM_ATRASO;
+      else return StatusDoEmprestimo.AGUARDANDO_DEVOLUCAO;
     }
 
 
   }
-
   public Multa devolver() throws EmprestimoJaDevolvidoException {
     if(dataDevolucao != null) {
       throw new EmprestimoJaDevolvidoException();
     }
     dataDevolucao = LocalDate.now();
-    if(getStatus().equals("Devolvido com atraso")) {
+    if(getStatus() == StatusDoEmprestimo.DEVOLVIDO_COM_ATRASO) {
       return new Multa(this);
     }
     return null;
   }
-
   public boolean renovar() {
-    if(getStatus().equals("Aguardando devolução")) {
+    if(getStatus() == StatusDoEmprestimo.AGUARDANDO_DEVOLUCAO) {
       int dias;
       if(usuario instanceof Servidor) dias =Servidor.tempoDeEmprestimo;
       else dias = Aluno.tempoDeEmprestimo;
