@@ -119,7 +119,7 @@ public class OperacoesGraficasDeReserva extends OperacoesDeReserva {
 
   }
 
-  public void consultarTotalDeExemplaresReservadosPorCategoriaEmUmPeríodo(ArrayList<Reserva> reservas, ArrayList<Categoria> categorias) {
+  public void consultarTotalDeExemplaresReservadosPorCategoriaEmUmPeriodo(ArrayList<Reserva> reservas, ArrayList<Categoria> categorias) {
     String nomeCategoria = JOptionPane.showInputDialog("Categoria: ");
     Categoria categoria = OperacoesDeCategoria.buscarPorNome(categorias,nomeCategoria);
     if(categoria == null) {

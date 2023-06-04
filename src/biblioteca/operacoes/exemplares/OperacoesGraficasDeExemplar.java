@@ -15,7 +15,11 @@ import java.util.ArrayList;
 
 public class OperacoesGraficasDeExemplar extends OperacoesDeExemplar {
   public int selecionarOpcao() {
-    return Integer.parseInt(JOptionPane.showInputDialog(getMenu()));
+    try {
+      return Integer.parseInt(JOptionPane.showInputDialog(getMenu()));
+    } catch (NumberFormatException exception) {
+      return -1;
+    }
   }
   public Exemplar criar() {
     String titulo = JOptionPane.showInputDialog("Título: ");
@@ -111,7 +115,6 @@ public class OperacoesGraficasDeExemplar extends OperacoesDeExemplar {
     temp.adicionarCategoria(categoria);
     JOptionPane.showMessageDialog(null, "Categoria " + categoria.getNome() + " adicionada ao exemplar " + temp.getTitulo() + ".");
   }
-
   public void removerCategoria(ArrayList<Exemplar> acervo, ArrayList<Categoria> categorias) {
     int codigo = Integer.parseInt(JOptionPane.showInputDialog("Código do Exemplar: "));
     Exemplar temp = buscarPorCodigo(acervo, codigo);
