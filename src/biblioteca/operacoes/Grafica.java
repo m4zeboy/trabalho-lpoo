@@ -1,12 +1,19 @@
 package biblioteca.operacoes;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class Grafica extends Operacoes {
   @Override
   public int selecionarOpcao() {
-    return Integer.parseInt(JOptionPane.showInputDialog(getMenu()));
+    try {
+      return Integer.parseInt(JOptionPane.showInputDialog(getMenu()));
+    } catch (NumberFormatException exception) {
+      return -1;
+    }
   }
 
+  @Override
+  public void mostrarMensagemDeOpcaoInvalida() {
+    JOptionPane.showMessageDialog(null, Operacoes.OPCAO_INVALIDA);
+  }
 }

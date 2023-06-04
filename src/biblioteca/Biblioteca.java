@@ -28,7 +28,7 @@ public class Biblioteca {
     ArrayList<Reserva> reservas = new ArrayList<>();
     ArrayList<Multa> multas = new ArrayList<>();
 
-    Operacoes menuPrincipal = new Grafica();
+    Operacoes operacaoPrincipal = new Grafica();
     OperacoesDeUsuario operacoesDeUsuario = new OperacoesGraficasDeUsuario();
     OperacoesDeExemplar operacoesDeExemplar = new OperacoesGraficasDeExemplar();
     OperacoesDeCategoria operacoesDeCategoria = new OperacoesGraficasDeCategoria();
@@ -37,30 +37,9 @@ public class Biblioteca {
 
     Semente.semear(usuarios, acervo, categorias, emprestimos, reservas);
 
-    // todo alterar as funções getMenu para capturar uma exceção caso a conversão para inteiro falhe.
-    //    todo getMenu usuario
-    //      todo getMenuEditar
-    //    todo getMenu exemplar
-    //    todo getMenu Categoria
-    //    todo getMenu Emprestimo
-
-    // todo Na classe Biblioteca eu recomendaria o uso do switch para os casos do menu, aumenta a legibilidade do código, especialmente ao utilizar o formato mais atual do JAVA.
-
-    // todo Tecnicamente a data do empréstimo deve ser a data em que o objeto foi criado (data atual). Nesse sentido, o construtor não deveria receber essa data como parametro.
-
-    // todo A classe multa faltou o campo valor conforme especifica o diagrama presente na descrição do trabalho.
-
-    // todo o método estaAtiva da classe reserva poderia ser simplificado, retornando diretamente o resutlado do I
-
-    // todo Recomendo delegar as operações de condicionais para uma classe específica que trate o contexto de cada funcionalidade (Usuario, Categoria, Exemplar, etc)
-
-    // todo A parte de devolução de empréstimos está permitindo a devolução de um item que já foi devolvido anteriormente.
-
-    // todo Sugiro estudarem um pouco sobre o conceito de ENUM e como utilizar em JAVA.
-
     boolean continuar = true;
     while(continuar) {
-      int opcaoPrincipal = menuPrincipal.selecionarOpcao();
+      int opcaoPrincipal = operacaoPrincipal.selecionarOpcao();
       switch (opcaoPrincipal) {
         case 1:
           boolean continuarUsuarios = true;
@@ -69,8 +48,7 @@ public class Biblioteca {
             switch (opcaoDeUsuarios) {
               case 1:
                 /* cadastrar usuário */
-                Usuario novo = operacoesDeUsuario.criar(usuarios);
-                usuarios.add(novo);
+                operacoesDeUsuario.criar(usuarios);
                 break;
               case 2:
                 /* Buscar Usuário por CPF */
@@ -103,9 +81,8 @@ public class Biblioteca {
                       break;
                     default:
                       /* opção invalida */
-                      JOptionPane.showMessageDialog(null, Operacoes.OPCAO_INVALIDA);
+                      operacaoPrincipal.mostrarMensagemDeOpcaoInvalida();
                       break;
-
                   }
                 }
                 break;
@@ -116,7 +93,7 @@ public class Biblioteca {
                 continuarUsuarios = false;
                 break;
               default:
-                JOptionPane.showMessageDialog(null, Operacoes.OPCAO_INVALIDA);
+                operacaoPrincipal.mostrarMensagemDeOpcaoInvalida();
                 break;
             }
           }
@@ -166,7 +143,7 @@ public class Biblioteca {
                       continuarEditarExemplares = false;
                       break;
                     default:
-                      JOptionPane.showMessageDialog(null, Operacoes.OPCAO_INVALIDA);
+                      operacaoPrincipal.mostrarMensagemDeOpcaoInvalida();
                       break;
                   }
                 }
@@ -180,7 +157,7 @@ public class Biblioteca {
                 continuarExemplares = false;
                 break;
               default:
-                JOptionPane.showMessageDialog(null, Operacoes.OPCAO_INVALIDA);
+                operacaoPrincipal.mostrarMensagemDeOpcaoInvalida();
                 break;
             }
           }
@@ -219,7 +196,7 @@ public class Biblioteca {
                 continuarCategorias = false;
                 break;
               default:
-                JOptionPane.showMessageDialog(null, Operacoes.OPCAO_INVALIDA);
+                operacaoPrincipal.mostrarMensagemDeOpcaoInvalida();
                 break;
             }
           }
@@ -231,11 +208,7 @@ public class Biblioteca {
             switch (opcaoDeEmprestimos) {
               case 1:
                 /* emprestar */
-                Emprestimo emprestimo = operacoesDeEmprestimo.emprestar(acervo, usuarios, emprestimos, reservas);
-                if(emprestimo != null) {
-                  emprestimos.add(emprestimo);
-                  JOptionPane.showMessageDialog(null, "Exemplar " + emprestimo.getExemplar().getTitulo() + " emprestado para o usuário " + emprestimo.getUsuario().getNome() + ".");
-                }
+                operacoesDeEmprestimo.emprestar(acervo, usuarios, emprestimos, reservas);
                 break;
               case 2:
                 operacoesDeEmprestimo.consultarPorCodigo(emprestimos);
@@ -254,7 +227,7 @@ public class Biblioteca {
                 continuarEmprestimos = false;
                 break;
               default:
-                JOptionPane.showMessageDialog(null, Operacoes.OPCAO_INVALIDA);
+                operacaoPrincipal.mostrarMensagemDeOpcaoInvalida();
                 break;
             }
           }
@@ -280,19 +253,19 @@ public class Biblioteca {
                 continuarReservas = false;
                 break;
               default:
-                JOptionPane.showMessageDialog(null, Operacoes.OPCAO_INVALIDA);
+                operacaoPrincipal.mostrarMensagemDeOpcaoInvalida();
                 break;
             }
           }
           break;
         case 6:
-          operacoesDeReserva.consultarTotalDeExemplaresReservadosPorCategoriaEmUmPeríodo(reservas,categorias);
+          operacoesDeReserva.consultarTotalDeExemplaresReservadosPorCategoriaEmUmPeriodo(reservas,categorias);
           break;
         case 7:
           continuar = false;
           break;
         default:
-          JOptionPane.showMessageDialog(null, Operacoes.OPCAO_INVALIDA);
+          operacaoPrincipal.mostrarMensagemDeOpcaoInvalida();
           break;
       }
     }
