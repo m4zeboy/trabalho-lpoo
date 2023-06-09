@@ -4,6 +4,7 @@ import biblioteca.Categoria;
 import biblioteca.Reserva;
 import biblioteca.emprestimo.Emprestimo;
 import biblioteca.emprestimo.StatusDoEmprestimo;
+import biblioteca.verificacoes.VerificacoesExemplarReserva;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -33,7 +34,6 @@ public abstract class Exemplar {
   public String getTitulo() {
     return titulo;
   }
-
   public ArrayList<Categoria> getCategorias() {
     return categorias;
   }
@@ -52,30 +52,6 @@ public abstract class Exemplar {
       }
     }
     return null;
-  }
-  public boolean temEmprestimos(ArrayList<Emprestimo> emprestimos) {
-    for(Emprestimo emprestimo: emprestimos) {
-      if(emprestimo.getExemplar().equals(this)) {
-        return true;
-      }
-    }
-    return false;
-  }
-  public boolean temReservas(ArrayList<Reserva> reservas) {
-    for(Reserva reserva: reservas) {
-      if(reserva.getExemplar().equals(this)) {
-        return true;
-      }
-    }
-    return false;
-  }
-  public boolean temReservasAtivas(ArrayList<Reserva> reservas) {
-    for(Reserva reserva: reservas) {
-      if(reserva.getExemplar().equals(this) && reserva.estaAtiva()) {
-        return true;
-      }
-    }
-    return false;
   }
   public Reserva getUltimaReserva(ArrayList<Reserva> reservas) {
     ArrayList<Reserva> reservasAtivas = new ArrayList<>();
@@ -108,22 +84,7 @@ public abstract class Exemplar {
   public boolean estaDisponivel(ArrayList<Emprestimo> emprestimos) {
     return getStatus(emprestimos) == StatusDoExemplar.DISPONIVEL;
   }
-  public LocalDate calcularDataDeExpiracao(ArrayList<Emprestimo> emprestimos, ArrayList<Reserva> reservas) {
-    if(estaDisponivel(emprestimos) && !temReservasAtivas(reservas)) {
-      return LocalDate.now().plusDays(1);
-    }
-    else if(estaDisponivel(emprestimos) && temReservasAtivas(reservas)) {
-      Reserva ultima = getUltimaReserva(reservas);
-      return ultima.getDataExpiracao().plusDays(1);
-    }
-    else if(!estaDisponivel(emprestimos) && !temReservasAtivas(reservas)) {
-      return getEmprestimoAtual(emprestimos).getVencimento().plusDays(1);
-    }
-    else {
-      Reserva ultima = getUltimaReserva(reservas);
-      return ultima.getDataExpiracao().plusDays(1);
-    }
-  }
+
   public String toString() {
     String saida = "Exemplar #" + this.id + "\n";
     saida += "Título: " + this.titulo + "\n";

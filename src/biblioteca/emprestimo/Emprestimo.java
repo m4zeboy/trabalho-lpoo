@@ -1,7 +1,8 @@
 package biblioteca.emprestimo;
 
+import biblioteca.excecoes.EmprestimoNaoPodeSerRenovadoException;
 import biblioteca.exemplar.Exemplar;
-import biblioteca.operacoes.excecoes.EmprestimoJaDevolvidoException;
+import biblioteca.excecoes.EmprestimoJaDevolvidoException;
 import biblioteca.usuario.Aluno;
 import biblioteca.usuario.Servidor;
 import biblioteca.usuario.Usuario;
@@ -76,14 +77,13 @@ public class Emprestimo {
     }
     return null;
   }
-  public boolean renovar() {
+  public void renovar() throws EmprestimoNaoPodeSerRenovadoException {
     if(getStatus() == StatusDoEmprestimo.AGUARDANDO_DEVOLUCAO) {
       int dias;
-      if(usuario instanceof Servidor) dias =Servidor.tempoDeEmprestimo;
+      if(usuario instanceof Servidor) dias = Servidor.tempoDeEmprestimo;
       else dias = Aluno.tempoDeEmprestimo;
       this.vencimento = this.vencimento.plusDays(dias);
-      return true;
-    } else return false;
+    } else throw new EmprestimoNaoPodeSerRenovadoException();
   }
   public String toString() {
     String saida = "Empréstimo #" + id + "\n";

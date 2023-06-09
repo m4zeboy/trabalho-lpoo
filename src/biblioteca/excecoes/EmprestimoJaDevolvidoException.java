@@ -1,4 +1,4 @@
-package biblioteca.operacoes.excecoes;
+package biblioteca.excecoes;
 
 public class EmprestimoJaDevolvidoException extends Exception{
     public EmprestimoJaDevolvidoException() {

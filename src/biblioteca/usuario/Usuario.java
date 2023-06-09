@@ -35,59 +35,11 @@ public abstract class Usuario {
   public void setNome(String nome) {
     this.nome = nome;
   }
-
   public String getCpf() {
     return cpf;
   }
   public void setCpf(String cpf) {
     this.cpf = cpf;
-  }
-  public ArrayList<Reserva> getReservas(ArrayList<Reserva> reservas){
-    ArrayList<Reserva> reservasAssociadas = new ArrayList<>();
-    for(Reserva reserva: reservas) {
-      if(reserva.getUsuario().equals(this)) {
-        reservasAssociadas.add(reserva);
-      }
-    }
-    return reservasAssociadas;
-  }
-  public boolean temReservaAtivaParaOExemplar(ArrayList<Reserva> reservas, Exemplar exemplar) {
-    for(Reserva reserva: reservas) {
-      if(reserva.getUsuario().equals(this) && reserva.getExemplar().equals(exemplar) && reserva.estaAtiva()) {
-        return true;
-      }
-    }
-    return false;
-  }
-  public boolean temReservasAtivasNoPeriodo(ArrayList<Reserva> reservas,LocalDate inicio, LocalDate fim) {
-    for(Reserva reserva: reservas) {
-      if(reserva.getUsuario().equals(this)) {
-        if(reserva.getDataReserva().isEqual(inicio) && reserva.getDataExpiracao().isEqual(fim)) return true;
-      }
-    }
-    return false;
-  }
-  public boolean temReservas(ArrayList<Reserva> reservas) { return getReservas(reservas).size() > 0; }
-  public ArrayList<Emprestimo> getEmprestimos(ArrayList<Emprestimo> emprestimos) {
-    ArrayList<Emprestimo> emprestimosAssociados = new ArrayList<>();
-    for(Emprestimo emprestimo: emprestimos) {
-      if(emprestimo.getUsuario().equals(this)) {
-        emprestimosAssociados.add(emprestimo);
-      }
-    }
-    return emprestimosAssociados;
-  }
-  public boolean temEmprestimo(ArrayList<Emprestimo> emprestimos) {
-    if(getEmprestimos(emprestimos).size() > 0) return true;
-    return false;
-  }
-  public boolean temEmprestimoEmAtraso(ArrayList<Emprestimo> emprestimos) {
-    for(Emprestimo emprestimo: emprestimos) {
-      if(emprestimo.getUsuario().equals(this)) {
-        if(emprestimo.getStatus().equals("Em atraso")) return true;
-      }
-    }
-    return false;
   }
 
   public String toString() {

@@ -2,6 +2,10 @@ package biblioteca.operacoes.usuario;
 
 import biblioteca.Reserva;
 import biblioteca.emprestimo.Emprestimo;
+import biblioteca.excecoes.AlunoJaCadastradoComEsseRGAException;
+import biblioteca.excecoes.ServidorJaCadastradoComEsseSIAPEException;
+import biblioteca.excecoes.UsuarioJaCadastradoComEsseCPFException;
+import biblioteca.excecoes.UsuarioNaoEncontradoException;
 import biblioteca.usuario.Aluno;
 import biblioteca.usuario.Servidor;
 import biblioteca.usuario.Usuario;
@@ -12,31 +16,39 @@ public abstract class OperacoesDeUsuario {
   public static String USUARIO_NAO_ENCONTRADO= "Usuário não encontrado";
 
   /* Métodos estáticos úteis para outras classes de operações, que não dependem de interface (gráfica ou terminal) */
-  public static Servidor buscarPorSiape(ArrayList<Usuario> usuarios, int siape) {
+  public static void naoExisteServidorComEsseSiape(ArrayList<Usuario> usuarios, int siape)
+  throws ServidorJaCadastradoComEsseSIAPEException {
     for(Usuario usuario: usuarios) {
       if(usuario instanceof Servidor) {
         if(((Servidor) usuario).getSiape() == siape) {
-          return ((Servidor) usuario);
+          throw new ServidorJaCadastradoComEsseSIAPEException();
         }
       }
     }
-    return null;
   }
-  public static Aluno buscarPorRga(ArrayList<Usuario> usuarios, int rga) {
+  public static void naoExisteAlunoComEsseRGA(ArrayList<Usuario> usuarios, int rga)
+  throws AlunoJaCadastradoComEsseRGAException {
     for(Usuario usuario: usuarios) {
       if(usuario instanceof Aluno) {
         if(((Aluno) usuario).getRga() == rga) {
-          return ((Aluno) usuario);
+          throw new AlunoJaCadastradoComEsseRGAException();
         }
       }
     }
-    return null;
   }
-  public static Usuario buscarPorCPF(ArrayList<Usuario> usuarios, String cpf) {
+  public static Usuario buscarPorCPF(ArrayList<Usuario> usuarios, String cpf)
+  throws UsuarioNaoEncontradoException {
     for(Usuario usuario: usuarios) {
       if(usuario.getCpf().equals(cpf)) { return usuario; }
     }
-    return null;
+    throw new UsuarioNaoEncontradoException();
+  }
+
+  public static void naoExisteUsuarioComEsseCPF(ArrayList<Usuario> usuarios, String cpf)
+          throws UsuarioJaCadastradoComEsseCPFException {
+    for(Usuario usuario: usuarios) {
+      if(usuario.getCpf().equals(cpf)) { throw new UsuarioJaCadastradoComEsseCPFException();}
+    }
   }
   /* a função getMenu() obtem o menu de gerência de usuários no formato de string */
   protected String getMenu() {
@@ -50,11 +62,10 @@ public abstract class OperacoesDeUsuario {
     return menu.toString();
   }
   public abstract int selecionarOpcao();
-
   public abstract void criar(ArrayList<Usuario> usuarios);
   public abstract void listar(ArrayList<Usuario> usuarios);
   public abstract void consultarPorCPF(ArrayList<Usuario> usuarios);
-  public abstract Usuario buscarPorCPF(ArrayList<Usuario> usuarios);
+  public abstract Usuario buscarPorCPF(ArrayList<Usuario> usuarios) throws UsuarioNaoEncontradoException;
   public String getMenuEditar() {
     StringBuilder mensagem = new StringBuilder("1 - Editar Nome\n");
     mensagem.append("2 - Editar CPF\n");

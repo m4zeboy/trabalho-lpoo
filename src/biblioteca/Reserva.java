@@ -1,9 +1,12 @@
 package biblioteca;
 
+import biblioteca.emprestimo.Emprestimo;
 import biblioteca.exemplar.Exemplar;
 import biblioteca.usuario.Usuario;
+import biblioteca.verificacoes.VerificacoesExemplarReserva;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Reserva {
@@ -45,6 +48,23 @@ public class Reserva {
   }
   public void cancelar() {
     dataExpiracao = LocalDate.now();
+  }
+
+  public LocalDate calcularDataDeExpiracao(ArrayList<Emprestimo> emprestimos, ArrayList<Reserva> reservas, Exemplar exemplar) {
+    if(exemplar.estaDisponivel(emprestimos) && !VerificacoesExemplarReserva.temReservasAtivas(reservas, exemplar)) {
+      return LocalDate.now().plusDays(1);
+    }
+    else if(exemplar.estaDisponivel(emprestimos) && VerificacoesExemplarReserva.temReservasAtivas(reservas, exemplar)) {
+      Reserva ultima = exemplar.getUltimaReserva(reservas);
+      return ultima.getDataExpiracao().plusDays(1);
+    }
+    else if(!exemplar.estaDisponivel(emprestimos) && !VerificacoesExemplarReserva.temReservasAtivas(reservas, exemplar)) {
+      return exemplar.getEmprestimoAtual(emprestimos).getVencimento().plusDays(1);
+    }
+    else {
+      Reserva ultima = exemplar.getUltimaReserva(reservas);
+      return ultima.getDataExpiracao().plusDays(1);
+    }
   }
   public String toString() {
     String saida = "Reserva #" + id + "\n";

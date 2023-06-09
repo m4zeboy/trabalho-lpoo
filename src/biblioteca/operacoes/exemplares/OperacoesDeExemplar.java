@@ -3,6 +3,7 @@ package biblioteca.operacoes.exemplares;
 import biblioteca.Categoria;
 import biblioteca.Reserva;
 import biblioteca.emprestimo.Emprestimo;
+import biblioteca.excecoes.ExemplarNaoEncontradoException;
 import biblioteca.exemplar.Exemplar;
 
 import java.util.ArrayList;
@@ -26,13 +27,13 @@ public abstract class OperacoesDeExemplar {
   /* a função listar() percorre a lista de exemplares e os exibe em tela */
   public abstract void listar(ArrayList<Exemplar> acervo);
   /* a função buscarPorCodigo() percorre a lista de exemplares em busca de um correspondente pelo id, se encontrar retorna-o*/
-  public static Exemplar buscarPorCodigo(ArrayList<Exemplar> acervo, int codigo) {
+  public static Exemplar buscarPorCodigo(ArrayList<Exemplar> acervo, int codigo) throws ExemplarNaoEncontradoException  {
     for(Exemplar exemplar: acervo) {
       if(exemplar.getId() == codigo) {
         return exemplar;
       }
     }
-    return null;
+    throw new ExemplarNaoEncontradoException();
   }
   /* a função consultarPorCodigo() le um código informado pelo usuário e chama a função buscarPorCodigo, se encontrar exibe os dados em tela */
   public abstract void consultarPorCodigo(ArrayList<Exemplar> acervo);

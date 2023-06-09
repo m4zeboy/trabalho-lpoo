@@ -3,6 +3,9 @@ package biblioteca.operacoes.reservas;
 import biblioteca.Categoria;
 import biblioteca.Reserva;
 import biblioteca.emprestimo.Emprestimo;
+import biblioteca.excecoes.ExemplarNaoEncontradoException;
+import biblioteca.excecoes.UsuarioNaoEncontradoException;
+import biblioteca.excecoes.UsuarioTemEmprestimoEmAtrasoException;
 import biblioteca.exemplar.Digital;
 import biblioteca.exemplar.Exemplar;
 import biblioteca.operacoes.PainelGrafico;
@@ -10,6 +13,7 @@ import biblioteca.operacoes.categorias.OperacoesDeCategoria;
 import biblioteca.operacoes.exemplares.OperacoesDeExemplar;
 import biblioteca.operacoes.usuario.OperacoesDeUsuario;
 import biblioteca.usuario.Usuario;
+import biblioteca.verificacoes.VerificacoesUsuarioEmprestimo;
 
 import javax.swing.*;
 import java.time.LocalDate;
@@ -24,26 +28,14 @@ public class OperacoesGraficasDeReserva extends OperacoesDeReserva {
       return -1;
     }
   }
-
   public void reservar(ArrayList<Reserva> reservas, ArrayList<Usuario> usuarios, ArrayList<Exemplar> acervo, ArrayList<Emprestimo> emprestimos) {
     String cpf = JOptionPane.showInputDialog("CPF: ");
-    Usuario usuario = OperacoesDeUsuario.buscarPorCPF(usuarios, cpf);
-    if(usuario == null) {
-      JOptionPane.showMessageDialog(null, OperacoesDeUsuario.USUARIO_NAO_ENCONTRADO);
-      return;
-    }
-    if(usuario.temEmprestimoEmAtraso(emprestimos)) {
-      JOptionPane.showMessageDialog(null, "Esse usuário não pode realizar reservas.");
-      return;
-    }
-    String codigo = JOptionPane.showInputDialog("Código do exemplar: ");
     try {
+      Usuario usuario = OperacoesDeUsuario.buscarPorCPF(usuarios, cpf);
+      VerificacoesUsuarioEmprestimo.naoTemEmprestimoEmAtraso(emprestimos, usuario);
+      String codigo = JOptionPane.showInputDialog("Código do exemplar: ");
       int id = Integer.parseInt(codigo);
       Exemplar exemplar = OperacoesDeExemplar.buscarPorCodigo(acervo, id);
-      if(exemplar == null) {
-        JOptionPane.showMessageDialog(null, OperacoesDeExemplar.EXEMPLAR_NAO_ENCONTRADO);
-        return;
-      }
       if(exemplar instanceof Digital) {
         JOptionPane.showMessageDialog(null, "Um exemplar do tipo digital está sempre disponível, não é necessário reservar ele.");
         return;
@@ -60,11 +52,16 @@ public class OperacoesGraficasDeReserva extends OperacoesDeReserva {
       Reserva reserva = new Reserva(usuario, exemplar, dataExpiracao);
       reservas.add(reserva);
       JOptionPane.showMessageDialog(null, "Exemplar #" + exemplar.getTitulo() + " reservado para " + usuario.getNome() + ".");
+    } catch (UsuarioNaoEncontradoException exception) {
+      JOptionPane.showMessageDialog(null, exception.getMessage());
+    } catch (UsuarioTemEmprestimoEmAtrasoException exception) {
+      JOptionPane.showMessageDialog(null, exception.getMessage());
     } catch (NumberFormatException exception) {
       JOptionPane.showMessageDialog(null, "O código precisa ser um número inteiro.");
+    } catch (ExemplarNaoEncontradoException exception) {
+      JOptionPane.showMessageDialog(null, exception.getMessage());
     }
   }
-
   public void consultarPorCodigo(ArrayList<Reserva> reservas) {
     String codigo = JOptionPane.showInputDialog("Código da reserva: ");
     try {
@@ -79,7 +76,6 @@ public class OperacoesGraficasDeReserva extends OperacoesDeReserva {
       JOptionPane.showMessageDialog(null, "O código precisa ser um número inteiro.");
     }
   }
-
   public void cancelar(ArrayList<Reserva> reservas) {
     String codigo = JOptionPane.showInputDialog("Código da reserva: ");
     try {
@@ -101,10 +97,6 @@ public class OperacoesGraficasDeReserva extends OperacoesDeReserva {
     try{
       int id = Integer.parseInt(codigo);
       Exemplar exemplar = OperacoesDeExemplar.buscarPorCodigo(acervo, id);
-      if(exemplar == null) {
-        JOptionPane.showMessageDialog(null, OperacoesDeExemplar.EXEMPLAR_NAO_ENCONTRADO);
-        return;
-      }
       String saida = "";
       for(Reserva reserva: reservas) {
         if(reserva.getExemplar().equals(exemplar) && reserva.estaAtiva()) {
@@ -115,6 +107,8 @@ public class OperacoesGraficasDeReserva extends OperacoesDeReserva {
       PainelGrafico.mostrarMensagemComScroll("Lista de Reservas", saida);
     } catch (NumberFormatException exception) {
       JOptionPane.showMessageDialog(null, "O código precisa ser um número inteiro.");
+    } catch (ExemplarNaoEncontradoException exception) {
+      JOptionPane.showMessageDialog(null, exception.getMessage());
     }
 
   }
@@ -127,7 +121,7 @@ public class OperacoesGraficasDeReserva extends OperacoesDeReserva {
       return;
     }
     String dataInicio = JOptionPane.showInputDialog("Início - yyyy-mm-dd: ");
-      String dataFim = JOptionPane.showInputDialog("Fim- yyyy-mm-dd: ");
+    String dataFim = JOptionPane.showInputDialog("Fim- yyyy-mm-dd: ");
     try {
       LocalDate inicio = LocalDate.parse(dataInicio);
       LocalDate fim = LocalDate.parse(dataFim);
@@ -136,7 +130,7 @@ public class OperacoesGraficasDeReserva extends OperacoesDeReserva {
       for(Reserva reserva: reservas) {
         if(
                 (reserva.getDataReserva().isEqual(inicio) || reserva.getDataReserva().isAfter(inicio)) &&
-                (reserva.getDataReserva().isEqual(fim) || reserva.getDataReserva().isBefore(fim))
+                        (reserva.getDataReserva().isEqual(fim) || reserva.getDataReserva().isBefore(fim))
         ) {
           if(reserva.getExemplar().getCategorias().contains(categoria)) {
             contador++;
