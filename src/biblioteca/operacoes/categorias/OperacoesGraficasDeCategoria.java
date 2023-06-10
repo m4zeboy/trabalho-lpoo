@@ -1,6 +1,8 @@
 package biblioteca.operacoes.categorias;
 
 import biblioteca.Categoria;
+import biblioteca.excecoes.CategoriaNaoEncontradaException;
+import biblioteca.excecoes.JaExisteCategoriaComEsseNomeException;
 import biblioteca.exemplar.Exemplar;
 import biblioteca.operacoes.PainelGrafico;
 
@@ -16,46 +18,49 @@ public class OperacoesGraficasDeCategoria extends OperacoesDeCategoria {
     }
   }
 
-  public Categoria criar(ArrayList<Categoria> categorias) {
+  public void criar(ArrayList<Categoria> categorias) {
     String nome = JOptionPane.showInputDialog("Nome da Categoria: ");
-    Categoria temp = buscarPorNome(categorias, nome);
-    if(temp != null) {
-      JOptionPane.showMessageDialog(null, "Já existe uma categoria com esse nome.");
-      return null;
+    try {
+      naoExisteCategoriaComEsseNome(categorias, nome);
+      categorias.add(new Categoria(nome));
+      JOptionPane.showMessageDialog(null,"Categoria criada");
+    } catch (JaExisteCategoriaComEsseNomeException exception) {
+      JOptionPane.showMessageDialog(null, exception.getMessage());
     }
-    return new Categoria(nome);
   }
 
-  public Categoria buscarPorNome(ArrayList<Categoria> categorias) {
-    String nome = JOptionPane.showInputDialog("Nome da Categoria: ");
-    return buscarPorNome(categorias, nome);
-  }
-
-  public Categoria buscarPorCodigo(ArrayList<Categoria> categorias) {
-    int codigo = Integer.parseInt(JOptionPane.showInputDialog("Código da categoria: "));
-    return buscarPorCodigo(categorias, codigo);
-  }
 
   public void consultarPorCodigo(ArrayList<Categoria> categorias) {
-    Categoria categoria = buscarPorCodigo(categorias);
-    if(categoria == null) JOptionPane.showMessageDialog(null, OperacoesDeCategoria.CATEGORIA_NAO_ENCONTRADA);
-    else JOptionPane.showMessageDialog(null, categoria);
+    String codigo = JOptionPane.showInputDialog("Código da categoria: ");
+    try {
+      int id = Integer.parseInt(codigo);
+      Categoria categoria = buscarPorCodigo(categorias, id);
+      JOptionPane.showMessageDialog(null, categoria);
+    }catch (NumberFormatException exception) {
+      JOptionPane.showMessageDialog(null, "O código precisa ser um número inteiro.");
+    } catch (CategoriaNaoEncontradaException exception) {
+      JOptionPane.showMessageDialog(null, exception.getMessage());
+    }
   }
 
   public void excluir(ArrayList<Categoria> categorias, ArrayList<Exemplar> acervo) {
-    Categoria temp = buscarPorCodigo(categorias);
-    if(temp == null) {
-      JOptionPane.showMessageDialog(null, OperacoesDeCategoria.CATEGORIA_NAO_ENCONTRADA);
-      return;
-    }
-    for(Exemplar exemplar: acervo) {
-      if(exemplar.getCategorias().contains(temp)) {
-        JOptionPane.showMessageDialog(null, "Não é possível excluir a categoria, existe exemplares que pertencem a essa categoria.");
-        return;
+    String codigo = JOptionPane.showInputDialog("Código da categoria: ");
+    try {
+      int id = Integer.parseInt(codigo);
+      Categoria temp = buscarPorCodigo(categorias, id);
+      for(Exemplar exemplar: acervo) {
+        if(exemplar.getCategorias().contains(temp)) {
+          JOptionPane.showMessageDialog(null, "Não é possível excluir a categoria, existe exemplares que pertencem a essa categoria.");
+          return;
+        }
       }
+      categorias.remove(temp);
+      JOptionPane.showMessageDialog(null, "Categoria " + temp.getNome() + " excluida.");
+    } catch (NumberFormatException exception) {
+      JOptionPane.showMessageDialog(null, "O código precisa ser um número inteiro.");
+    } catch (CategoriaNaoEncontradaException exception) {
+      JOptionPane.showMessageDialog(null, exception.getMessage());
     }
-    categorias.remove(temp);
-    JOptionPane.showMessageDialog(null, "Categoria " + temp.getNome() + " excluida.");
   }
 
   public void listar(ArrayList<Categoria> categorias) {
@@ -70,13 +75,17 @@ public class OperacoesGraficasDeCategoria extends OperacoesDeCategoria {
     PainelGrafico.mostrarMensagemComScroll("Lista de Categorias", saida);
   }
   public void editar(ArrayList<Categoria> categorias) {
-    Categoria temp = buscarPorCodigo(categorias);
-    if(temp == null) {
-      JOptionPane.showMessageDialog(null, OperacoesDeCategoria.CATEGORIA_NAO_ENCONTRADA);
-      return;
+    String codigo = JOptionPane.showInputDialog("Código da categoria: ");
+    try {
+      int id = Integer.parseInt(codigo);
+      Categoria temp = buscarPorCodigo(categorias,id);
+      String novoNome = JOptionPane.showInputDialog("Novo nome da categoria: ");
+      temp.setNome(novoNome);
+      JOptionPane.showMessageDialog(null, "Categoria editada com sucesso.");
+    } catch (NumberFormatException exception) {
+      JOptionPane.showMessageDialog(null, "O código precisa ser um número inteiro.");
+    } catch (CategoriaNaoEncontradaException exception) {
+      JOptionPane.showMessageDialog(null, exception.getMessage());
     }
-    String novoNome = JOptionPane.showInputDialog("Novo nome da categoria: ");
-    temp.setNome(novoNome);
-    JOptionPane.showMessageDialog(null, "Categoria editada com sucesso.");
   }
 }

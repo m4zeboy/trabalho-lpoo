@@ -9,7 +9,6 @@ import biblioteca.exemplar.Exemplar;
 import java.util.ArrayList;
 
 public abstract class OperacoesDeExemplar {
-  public static String EXEMPLAR_NAO_ENCONTRADO = "Exemplar não encontrado.";
   /* a função getMenu() obtém o menu de gerenciar exemplares em formato string */
   protected String getMenu() {
     StringBuilder mensagem = new StringBuilder("1 - Cadastrar\n");

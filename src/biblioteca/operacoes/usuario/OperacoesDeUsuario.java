@@ -13,7 +13,6 @@ import biblioteca.usuario.Usuario;
 import java.util.ArrayList;
 
 public abstract class OperacoesDeUsuario {
-  public static String USUARIO_NAO_ENCONTRADO= "Usuário não encontrado";
 
   /* Métodos estáticos úteis para outras classes de operações, que não dependem de interface (gráfica ou terminal) */
   public static void naoExisteServidorComEsseSiape(ArrayList<Usuario> usuarios, int siape)

@@ -7,9 +7,12 @@ import biblioteca.excecoes.*;
 import biblioteca.exemplar.Exemplar;
 import biblioteca.operacoes.PainelGrafico;
 import biblioteca.operacoes.exemplares.OperacoesDeExemplar;
+import biblioteca.operacoes.reservas.OperacoesDeReserva;
 import biblioteca.operacoes.usuario.OperacoesDeUsuario;
 import biblioteca.usuario.Usuario;
+import biblioteca.verificacoes.VerificacoesExemplarReserva;
 import biblioteca.verificacoes.VerificacoesUsuarioEmprestimo;
+import biblioteca.verificacoes.VerificacoesUsuarioReserva;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -36,21 +39,15 @@ public class OperacoesGraficaDeEmprestimo extends OperacoesDeEmprestimo {
           JOptionPane.showMessageDialog(null, "O exemplar não está disponível para empréstimo.");
           return;
         }
-        if(exemplar.temReservasAtivas(reservas)) {
-          Reserva proxima = exemplar.getProximaReserva(reservas);
-          if(!proxima.getUsuario().equals(usuario)) {
-            JOptionPane.showMessageDialog(null, "Outro usuário já reservou esse exemplar.");
-            return ;
-          } else {
-            proxima.cancelar();
-          }
+        if(VerificacoesExemplarReserva.temReservasAtivas(reservas, exemplar)) {
+          VerificacoesUsuarioReserva.aProximaReservaPertenceAoUsuario(reservas, exemplar, usuario);
         }
         Emprestimo emprestimo = new Emprestimo(usuario,exemplar);
         emprestimos.add(emprestimo);
         JOptionPane.showMessageDialog(null, "Exemplar " + emprestimo.getExemplar().getTitulo() + " emprestado para o usuário " + emprestimo.getUsuario().getNome() + ".");
       } catch (NumberFormatException exception) {
         JOptionPane.showMessageDialog(null, "O valor informado não é um número.");
-      } catch (ExemplarNaoEncontradoException exception) {
+      } catch (ExemplarNaoEncontradoException | OExemplarEstaReservadoParaOutroUsuarioException exception) {
         JOptionPane.showMessageDialog(null, exception.getMessage());
       }
     } catch(UsuarioNaoEncontradoException | UsuarioTemEmprestimoEmAtrasoException exception) {
@@ -63,13 +60,11 @@ public class OperacoesGraficaDeEmprestimo extends OperacoesDeEmprestimo {
     try {
       int id = Integer.parseInt(codigo);
       Emprestimo emprestimo = buscarPorCodigo(emprestimos,id);
-      if(emprestimo == null) {
-        JOptionPane.showMessageDialog(null,OperacoesDeEmprestimo.EMPRESTIMO_NAO_ENCONTRADO);
-        return;
-      }
       JOptionPane.showMessageDialog(null, emprestimo);
     } catch (NumberFormatException exception) {
       JOptionPane.showMessageDialog(null, "O valor informado precisa ser um número inteiro.");
+    } catch (EmprestimoNaoEncontradoException exception) {
+      JOptionPane.showMessageDialog(null, exception.getMessage());
     }
   }
   public void devolver(ArrayList<Emprestimo> emprestimos, ArrayList<Multa> multas) {
@@ -77,23 +72,17 @@ public class OperacoesGraficaDeEmprestimo extends OperacoesDeEmprestimo {
     try {
       int id = Integer.parseInt(codigo);
       Emprestimo emprestimo = buscarPorCodigo(emprestimos, id);
-      if(emprestimo == null) {
-        JOptionPane.showMessageDialog(null,OperacoesDeEmprestimo.EMPRESTIMO_NAO_ENCONTRADO);
+      Multa multa = emprestimo.devolver();
+      if (multa != null) {
+        multas.add(multa);
+        JOptionPane.showMessageDialog(null, "Empréstimo devolvido com atraso. Multa de R$" + multa.getValor() + ".");
         return;
       }
-      try {
-        Multa multa = emprestimo.devolver();
-        if(multa != null) {
-          multas.add(multa);
-          JOptionPane.showMessageDialog(null, "Empréstimo devolvido com atraso. Multa de R$" + multa.getValor() + ".");
-          return;
-        }
-        JOptionPane.showMessageDialog(null, "Empréstimo devolvido.");
-      } catch (EmprestimoJaDevolvidoException exception) {
-        JOptionPane.showMessageDialog(null,exception.getMessage());
-      }
+      JOptionPane.showMessageDialog(null, "Empréstimo devolvido.");
     } catch (NumberFormatException exception) {
-      JOptionPane.showMessageDialog(null, "O valor informado precisa ser um número inteiro.");
+      JOptionPane.showMessageDialog(null, "O código precisa ser um número inteiro.");
+    } catch (EmprestimoNaoEncontradoException |  EmprestimoJaDevolvidoException exception) {
+      JOptionPane.showMessageDialog(null, exception.getMessage());
     }
   }
   public void renovar(ArrayList<Emprestimo> emprestimos, ArrayList<Reserva> reservas) {
@@ -101,11 +90,7 @@ public class OperacoesGraficaDeEmprestimo extends OperacoesDeEmprestimo {
     try {
       int id = Integer.parseInt(codigo);
       Emprestimo emprestimo = buscarPorCodigo(emprestimos, id);
-      if(emprestimo == null) {
-        JOptionPane.showMessageDialog(null, OperacoesDeEmprestimo.EMPRESTIMO_NAO_ENCONTRADO);
-        return;
-      }
-      if(emprestimo.getExemplar().temReservasAtivas(reservas)) {
+      if(VerificacoesExemplarReserva.temReservasAtivas(reservas, emprestimo.getExemplar())) {
         JOptionPane.showMessageDialog(null, "Não é possível renovar o empréstimo pois o exemplar já está reservado.");
         return;
       }
@@ -117,6 +102,8 @@ public class OperacoesGraficaDeEmprestimo extends OperacoesDeEmprestimo {
       }
     } catch (NumberFormatException exception) {
       JOptionPane.showMessageDialog(null, "O valor informado precisa ser um número inteiro.");
+    } catch (EmprestimoNaoEncontradoException exception) {
+      JOptionPane.showMessageDialog(null, exception.getMessage());
     }
   }
   public void listar(ArrayList<Emprestimo> emprestimos) {

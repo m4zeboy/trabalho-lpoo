@@ -3,13 +3,13 @@ package biblioteca.operacoes.emprestimos;
 import biblioteca.Reserva;
 import biblioteca.emprestimo.Emprestimo;
 import biblioteca.emprestimo.Multa;
+import biblioteca.excecoes.EmprestimoNaoEncontradoException;
 import biblioteca.exemplar.Exemplar;
 import biblioteca.usuario.Usuario;
 
 import java.util.ArrayList;
 
 public abstract class OperacoesDeEmprestimo {
-  public static String EMPRESTIMO_NAO_ENCONTRADO = "Empréstimo não encontrado.";
   protected String getMenu() {
     String mensagem = "1 - Emprestar\n";
     mensagem += "2 - Consultar status de um empréstimo\n";
@@ -21,11 +21,12 @@ public abstract class OperacoesDeEmprestimo {
   }
   public abstract int selecionarOpcao();
   public abstract void emprestar(ArrayList<Exemplar> acervo, ArrayList<Usuario> usuarios, ArrayList<Emprestimo> emprestimos, ArrayList<Reserva> reservas);
-  public static Emprestimo buscarPorCodigo(ArrayList<Emprestimo> emprestimos, int codigo) {
+  public static Emprestimo buscarPorCodigo(ArrayList<Emprestimo> emprestimos, int codigo)
+  throws EmprestimoNaoEncontradoException {
     for(Emprestimo emprestimo: emprestimos) {
       if(emprestimo.getId() == codigo) return emprestimo;
     }
-    return null;
+    throw new EmprestimoNaoEncontradoException();
   }
   public abstract void consultarPorCodigo(ArrayList<Emprestimo> emprestimos);
   public abstract void devolver(ArrayList<Emprestimo> emprestimos, ArrayList<Multa> multas);
