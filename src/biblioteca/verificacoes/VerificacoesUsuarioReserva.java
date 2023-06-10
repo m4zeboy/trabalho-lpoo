@@ -1,8 +1,12 @@
 package biblioteca.verificacoes;
 
 import biblioteca.Reserva;
+import biblioteca.excecoes.OExemplarEstaReservadoParaOutroUsuarioException;
+import biblioteca.excecoes.UsuarioJaTemReservaAtivaParaEsseExemplarException;
 import biblioteca.excecoes.UsuarioTemReservasAssociadasException;
+import biblioteca.excecoes.UsuarioTemReservasAtivasNoPeriodoException;
 import biblioteca.exemplar.Exemplar;
+import biblioteca.operacoes.reservas.OperacoesDeReserva;
 import biblioteca.usuario.Usuario;
 
 import java.time.LocalDate;
@@ -21,20 +25,27 @@ public class VerificacoesUsuarioReserva {
   public static void naoTemReservas(ArrayList<Reserva> reservas, Usuario usuario) throws UsuarioTemReservasAssociadasException {
     if(getReservas(reservas,usuario).size() > 0) throw new UsuarioTemReservasAssociadasException();
   }
-  public static boolean temReservaAtivaParaOExemplar(ArrayList<Reserva> reservas, Usuario usuario, Exemplar exemplar) {
+  public static void naoTemReservaAtivaParaOExemplar(ArrayList<Reserva> reservas, Usuario usuario, Exemplar exemplar)
+          throws UsuarioJaTemReservaAtivaParaEsseExemplarException  {
     for(Reserva reserva: reservas) {
       if(reserva.getUsuario().equals(usuario) && reserva.getExemplar().equals(exemplar) && reserva.estaAtiva()) {
-        return true;
+        throw new UsuarioJaTemReservaAtivaParaEsseExemplarException();
       }
     }
-    return false;
   }
-  public static boolean temReservasAtivasNoPeriodo(ArrayList<Reserva> reservas, Usuario usuario,LocalDate inicio, LocalDate fim) {
+  public static void aProximaReservaPertenceAoUsuario(ArrayList<Reserva> reservas, Exemplar exemplar, Usuario usuario)
+  throws OExemplarEstaReservadoParaOutroUsuarioException {
+    Reserva proxima = OperacoesDeReserva.getProximaReservaParaOExemplar(reservas, exemplar);
+    if(proxima.getUsuario().equals(usuario) == false) throw new OExemplarEstaReservadoParaOutroUsuarioException();
+    else { proxima.cancelar(); }
+  }
+
+  public static void usuarioNaoTemReservasNoPeriodo(ArrayList<Reserva> reservas, Usuario usuario, LocalDate inicio, LocalDate fim)
+  throws UsuarioTemReservasAtivasNoPeriodoException {
     for(Reserva reserva: reservas) {
       if(reserva.getUsuario().equals(usuario)) {
-        if(reserva.getDataReserva().isEqual(inicio) && reserva.getDataExpiracao().isEqual(fim)) return true;
+        if(OperacoesDeReserva.reservaEstaNoPeriodo(reserva, inicio, fim)) throw new UsuarioTemReservasAtivasNoPeriodoException();
       }
     }
-    return false;
   }
 }
