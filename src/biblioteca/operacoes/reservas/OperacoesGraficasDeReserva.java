@@ -12,7 +12,7 @@ import biblioteca.operacoes.exemplares.OperacoesDeExemplar;
 import biblioteca.operacoes.usuario.OperacoesDeUsuario;
 import biblioteca.usuario.Usuario;
 import biblioteca.verificacoes.VerificacoesUsuarioEmprestimo;
-import biblioteca.verificacoes.VerificacoesUsuarioReserva;
+import biblioteca.verificacoes.VerificacoesUsuarioExemplarReserva;
 
 import javax.swing.*;
 import java.time.LocalDate;
@@ -39,9 +39,8 @@ public class OperacoesGraficasDeReserva extends OperacoesDeReserva {
         JOptionPane.showMessageDialog(null, "Um exemplar do tipo digital está sempre disponível, não é necessário reservar ele.");
         return;
       }
-      VerificacoesUsuarioReserva.naoTemReservaAtivaParaOExemplar(reservas, usuario, exemplar);
       LocalDate dataExpiracao = Reserva.calcularDataDeExpiracao(emprestimos,reservas,exemplar);
-      VerificacoesUsuarioReserva.usuarioNaoTemReservasNoPeriodo(reservas, usuario, LocalDate.now(), dataExpiracao);
+      VerificacoesUsuarioExemplarReserva.usuarioNaoTemReservasParaOExemplarNoPeriodo(reservas, usuario, exemplar, LocalDate.now(), dataExpiracao);
       Reserva reserva = new Reserva(usuario, exemplar, dataExpiracao);
       reservas.add(reserva);
       JOptionPane.showMessageDialog(null, "Exemplar #" + exemplar.getTitulo() + " reservado para " + usuario.getNome() + ".");
@@ -51,7 +50,7 @@ public class OperacoesGraficasDeReserva extends OperacoesDeReserva {
       JOptionPane.showMessageDialog(null, exception.getMessage());
     } catch (NumberFormatException exception) {
       JOptionPane.showMessageDialog(null, "O código precisa ser um número inteiro.");
-    } catch (ExemplarNaoEncontradoException | UsuarioJaTemReservaAtivaParaEsseExemplarException | UsuarioTemReservasAtivasNoPeriodoException exception) {
+    } catch (ExemplarNaoEncontradoException | UsuarioTemReservasAtivasParaOExemplarNoPeriodoException exception) {
       JOptionPane.showMessageDialog(null, exception.getMessage());
     }
   }

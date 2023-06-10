@@ -19,6 +19,9 @@ import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import biblioteca.operacoes.Operacoes;
 import biblioteca.operacoes.Grafica;
+
+// todo persistencia
+// todo adicionar novo relatorio
 public class Biblioteca {
   public static void main(String[] args) {
     ArrayList<Usuario> usuarios = new ArrayList<>();
