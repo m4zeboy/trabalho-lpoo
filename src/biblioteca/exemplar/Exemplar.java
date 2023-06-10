@@ -4,9 +4,7 @@ import biblioteca.Categoria;
 import biblioteca.Reserva;
 import biblioteca.emprestimo.Emprestimo;
 import biblioteca.emprestimo.StatusDoEmprestimo;
-import biblioteca.verificacoes.VerificacoesExemplarReserva;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -63,14 +61,6 @@ public abstract class Exemplar {
     if(reservasAtivas.size() > 0) return reservasAtivas.get(reservasAtivas.size() - 1);
     return null;
   }
-  public Reserva getProximaReserva(ArrayList<Reserva> reservas) {
-    for(Reserva reserva: reservas) {
-      if(reserva.getExemplar().equals(this) && reserva.estaAtiva()) {
-        return reserva;
-      }
-    }
-    return null;
-  }
   public StatusDoExemplar getStatus(ArrayList<Emprestimo> emprestimos) {
     for(Emprestimo emprestimo: emprestimos) {
       if(emprestimo.getExemplar().equals(this)) {
@@ -84,7 +74,6 @@ public abstract class Exemplar {
   public boolean estaDisponivel(ArrayList<Emprestimo> emprestimos) {
     return getStatus(emprestimos) == StatusDoExemplar.DISPONIVEL;
   }
-
   public String toString() {
     String saida = "Exemplar #" + this.id + "\n";
     saida += "Título: " + this.titulo + "\n";
@@ -95,7 +84,6 @@ public abstract class Exemplar {
     saida += "\n";
     return saida;
   }
-
 }
 
 enum StatusDoExemplar {

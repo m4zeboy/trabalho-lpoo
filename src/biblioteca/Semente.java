@@ -5,6 +5,7 @@ import biblioteca.exemplar.Digital;
 import biblioteca.exemplar.Exemplar;
 import biblioteca.exemplar.Livro;
 import biblioteca.exemplar.Midia;
+import biblioteca.operacoes.reservas.OperacoesDeReserva;
 import biblioteca.usuario.Aluno;
 import biblioteca.usuario.Servidor;
 import biblioteca.usuario.Usuario;
@@ -149,7 +150,7 @@ public class Semente {
 
     for(int i = 10; i < 20; i++) {
       Usuario usuario = usuarios.get(i);
-      reservas.add(new Reserva(usuario, acervo.get(i), acervo.get(i).calcularDataDeExpiracao(emprestimos, reservas)));
+      reservas.add(new Reserva(usuario, acervo.get(i), Reserva.calcularDataDeExpiracao(emprestimos, reservas, acervo.get(i))));
     }
   }
 }

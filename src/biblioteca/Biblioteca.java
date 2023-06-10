@@ -170,11 +170,7 @@ public class Biblioteca {
             switch (opcaoDeCategorias) {
               case 1:
                 /* criar categoria */
-                Categoria nova = operacoesDeCategoria.criar(categorias);
-                if(nova != null) {
-                  categorias.add(nova);
-                  JOptionPane.showMessageDialog(null,"Categoria criada com código #" + nova.getId() + ".");
-                }
+                operacoesDeCategoria.criar(categorias);
                 break;
               case 2:
                 /* pesquisar por codigo */
