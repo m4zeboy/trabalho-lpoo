@@ -50,7 +50,7 @@ public class Reserva {
     dataExpiracao = LocalDate.now();
   }
 
-  public LocalDate calcularDataDeExpiracao(ArrayList<Emprestimo> emprestimos, ArrayList<Reserva> reservas, Exemplar exemplar) {
+  public static LocalDate calcularDataDeExpiracao(ArrayList<Emprestimo> emprestimos, ArrayList<Reserva> reservas, Exemplar exemplar) {
     if(exemplar.estaDisponivel(emprestimos) && !VerificacoesExemplarReserva.temReservasAtivas(reservas, exemplar)) {
       return LocalDate.now().plusDays(1);
     }
