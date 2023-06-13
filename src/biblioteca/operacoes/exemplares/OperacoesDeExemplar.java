@@ -22,7 +22,7 @@ public abstract class OperacoesDeExemplar {
   /* a função selecionarOpcao() mostra o menu de gerenciar exemplares para que o usuário possa escolher uma operação */
   public abstract int selecionarOpcao();
   /* a função criar le os dados, instancia um novo exemplar e adiciona na lista de exemplares */
-  public abstract Exemplar criar();
+  public abstract void criar(ArrayList<Exemplar> acervo);
   /* a função listar() percorre a lista de exemplares e os exibe em tela */
   public abstract void listar(ArrayList<Exemplar> acervo);
   /* a função buscarPorCodigo() percorre a lista de exemplares em busca de um correspondente pelo id, se encontrar retorna-o*/
