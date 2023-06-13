@@ -3,6 +3,7 @@ package biblioteca.operacoes.exemplares;
 import biblioteca.Categoria;
 import biblioteca.Reserva;
 import biblioteca.emprestimo.Emprestimo;
+import biblioteca.excecoes.CategoriaNaoEncontradaException;
 import biblioteca.excecoes.ExemplarNaoEncontradoException;
 import biblioteca.excecoes.ExemplarTemEmprestimosAssociadosException;
 import biblioteca.excecoes.ExemplarTemReservasAssociadasException;
@@ -26,29 +27,36 @@ public class OperacoesGraficasDeExemplar extends OperacoesDeExemplar {
       return -1;
     }
   }
-  public Exemplar criar() {
+  public void criar(ArrayList<Exemplar> exemplares) {
     String titulo = JOptionPane.showInputDialog("Título: ");
     String[] tipos = { "Livro", "Mídia", "Digital"};
     int tipo = JOptionPane.showOptionDialog(null, "Qual tipo de Exemplar você deseja criar?", "Biblioteca", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, tipos, tipos[0]);
+    Exemplar novo = null;
     if(tipo == 1) {
       String tipoArquivo = JOptionPane.showInputDialog("Tipo de Arquivo: ");
-      return new Midia(titulo,tipoArquivo);
+      novo = new Midia(titulo,tipoArquivo);
+      exemplares.add(novo);
     } else if(tipo == 2){
-      return new Digital(titulo);
+      novo = new Digital(titulo);
+      exemplares.add(novo);
+    } else {
+      String ano = JOptionPane.showInputDialog("Ano: ");
+      novo = new Livro(titulo, ano);
+      exemplares.add(novo);
     }
-    String ano = JOptionPane.showInputDialog("Ano: ");
-    return new Livro(titulo, ano);
+    JOptionPane.showMessageDialog(null, "Exemplar criado com código #" +novo.getId() + ".");
   }
   public void listar(ArrayList<Exemplar> acervo) {
     if(acervo.size() == 0) {
       JOptionPane.showMessageDialog(null, "Não há exemplares.");
+    } else {
+      String saida = "";
+      for(Exemplar exemplar: acervo) {
+        saida += exemplar.toString();
+        saida +=     "================================================\n";
+      }
+      PainelGrafico.mostrarMensagemComScroll("Acervo",saida);
     }
-    String saida = "";
-    for(Exemplar exemplar: acervo) {
-      saida += exemplar.toString();
-      saida +=     "================================================\n";
-    }
-    PainelGrafico.mostrarMensagemComScroll("Acervo",saida);
   }
   public void consultarPorCodigo(ArrayList<Exemplar> acervo) {
     String codigo = JOptionPane.showInputDialog("Código do Exemplar: ");
@@ -134,15 +142,11 @@ public class OperacoesGraficasDeExemplar extends OperacoesDeExemplar {
       Exemplar temp = buscarPorCodigo(acervo,id);
       String nomeCategoria = JOptionPane.showInputDialog("Nome da categoria: ");
       Categoria categoria = OperacoesDeCategoria.buscarPorNome(categorias, nomeCategoria);
-      if(categoria == null) {
-        JOptionPane.showMessageDialog(null, OperacoesDeCategoria.CATEGORIA_NAO_ENCONTRADA);
-        return;
-      }
       temp.adicionarCategoria(categoria);
       JOptionPane.showMessageDialog(null, "Categoria " + categoria.getNome() + " adicionada ao exemplar " + temp.getTitulo() + ".");
     } catch (NumberFormatException exception) {
       JOptionPane.showMessageDialog(null, "O código precisa ser um número inteiro.");
-    } catch (ExemplarNaoEncontradoException exception) {
+    } catch (ExemplarNaoEncontradoException | CategoriaNaoEncontradaException exception) {
       JOptionPane.showMessageDialog(null, exception.getMessage());
 
     }
@@ -154,16 +158,11 @@ public class OperacoesGraficasDeExemplar extends OperacoesDeExemplar {
       Exemplar temp = buscarPorCodigo(acervo, id);
       String nomeCategoria = JOptionPane.showInputDialog("Nome da categoria: ");
       Categoria categoria = OperacoesDeCategoria.buscarPorNome(categorias, nomeCategoria);
-      if(categoria == null) {
-        JOptionPane.showMessageDialog(null, OperacoesDeCategoria.CATEGORIA_NAO_ENCONTRADA);
-        return;
-      }
       temp.getCategorias().remove(categoria);
       JOptionPane.showMessageDialog(null, "Categoria " + categoria.getNome() + " removida do exemplar " + temp.getTitulo() + ".");
-
     } catch (NumberFormatException exception) {
       JOptionPane.showMessageDialog(null, "O código precisa ser um número inteiro.");
-    } catch (ExemplarNaoEncontradoException exception) {
+    } catch (ExemplarNaoEncontradoException | CategoriaNaoEncontradaException exception) {
       JOptionPane.showMessageDialog(null, exception.getMessage());
 
     }
