@@ -26,13 +26,14 @@ public class OperacoesGraficasDeUsuario extends OperacoesDeUsuario {
   public void listar(ArrayList<Usuario> usuarios) {
     if(usuarios.size() == 0) {
       JOptionPane.showMessageDialog(null, "Não há usuários.");
+    } else {
+      String saida = "";
+      for(Usuario usuario: usuarios) {
+        saida += usuario.toString();
+        saida += "==================================================\n";
+      }
+      PainelGrafico.mostrarMensagemComScroll("Lista de Usuários",saida);
     }
-    String saida = "";
-    for(Usuario usuario: usuarios) {
-      saida += usuario.toString();
-      saida += "==================================================\n";
-    }
-    PainelGrafico.mostrarMensagemComScroll("Lista de Usuários",saida);
   }
   /* a função criar le os dados do usuário, instancia um novo objeto e insere-o na lista de usuários */
   public void criar(ArrayList<Usuario> usuarios) {
