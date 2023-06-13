@@ -1,8 +1,9 @@
 package biblioteca;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class Categoria {
+public class Categoria implements Serializable {
     private int id;
     private String nome;
 

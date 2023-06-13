@@ -4,12 +4,13 @@ import biblioteca.Reserva;
 import biblioteca.emprestimo.Emprestimo;
 import biblioteca.exemplar.Exemplar;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
 
-public abstract class Usuario {
+public abstract class Usuario implements Serializable {
   private int id;
   protected String nome;
   protected String cpf;

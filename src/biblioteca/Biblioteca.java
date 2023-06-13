@@ -13,6 +13,8 @@ import biblioteca.operacoes.reservas.OperacoesDeReserva;
 import biblioteca.operacoes.reservas.OperacoesGraficasDeReserva;
 import biblioteca.operacoes.usuario.OperacoesDeUsuario;
 import biblioteca.operacoes.usuario.OperacoesGraficasDeUsuario;
+import biblioteca.persistencia.RecuperarDados;
+import biblioteca.persistencia.SalvarDados;
 import biblioteca.usuario.Usuario;
 
 import javax.swing.JOptionPane;
@@ -24,12 +26,12 @@ import biblioteca.operacoes.Grafica;
 // todo adicionar novo relatorio
 public class Biblioteca {
   public static void main(String[] args) {
-    ArrayList<Usuario> usuarios = new ArrayList<>();
-    ArrayList<Exemplar> acervo = new ArrayList<>();
-    ArrayList<Categoria> categorias = new ArrayList<>();
-    ArrayList<Emprestimo> emprestimos = new ArrayList<>();
-    ArrayList<Reserva> reservas = new ArrayList<>();
-    ArrayList<Multa> multas = new ArrayList<>();
+    ArrayList<Usuario> usuarios = RecuperarDados.recuperarUsuarios();
+    ArrayList<Exemplar> acervo = RecuperarDados.recuperarAcervo();
+    ArrayList<Categoria> categorias = RecuperarDados.recuperarCategorias();
+    ArrayList<Emprestimo> emprestimos = RecuperarDados.recuperarEmprestimos();
+    ArrayList<Reserva> reservas = RecuperarDados.recuperarReservas();
+    ArrayList<Multa> multas = RecuperarDados.recuperarMultas();
 
     Operacoes operacaoPrincipal = new Grafica();
     OperacoesDeUsuario operacoesDeUsuario = new OperacoesGraficasDeUsuario();
@@ -38,7 +40,7 @@ public class Biblioteca {
     OperacoesDeEmprestimo operacoesDeEmprestimo = new OperacoesGraficaDeEmprestimo();
     OperacoesDeReserva operacoesDeReserva = new OperacoesGraficasDeReserva();
 
-    Semente.semear(usuarios, acervo, categorias, emprestimos, reservas);
+//    Semente.semear(usuarios, acervo, categorias, emprestimos, reservas);
 
     boolean continuar = true;
     while(continuar) {
@@ -108,9 +110,7 @@ public class Biblioteca {
             switch (opcaoDeExemplares) {
               case 1:
                 /* cadastrar exemplar */
-                Exemplar novo = operacoesDeExemplar.criar();
-                acervo.add(novo);
-                JOptionPane.showMessageDialog(null, "Exemplar criado com código #" +novo.getId() + ".");
+                operacoesDeExemplar.criar(acervo);
                 break;
               case 2:
                 /* consultar por codigo */
@@ -268,6 +268,13 @@ public class Biblioteca {
           break;
       }
     }
+
+    SalvarDados.salvarUsuarios(usuarios);
+    SalvarDados.salvarCateogorias(categorias);
+    SalvarDados.salvarAcervo(acervo);
+    SalvarDados.salvarEmprestimos(emprestimos);
+    SalvarDados.salvarReservas(reservas);
+    SalvarDados.salvarMultas(multas);
 
   }
 }

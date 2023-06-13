@@ -5,10 +5,11 @@ import biblioteca.Reserva;
 import biblioteca.emprestimo.Emprestimo;
 import biblioteca.emprestimo.StatusDoEmprestimo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-public abstract class Exemplar {
+public abstract class Exemplar implements Serializable {
   protected int id;
   protected String titulo;
 

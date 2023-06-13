@@ -5,11 +5,12 @@ import biblioteca.exemplar.Exemplar;
 import biblioteca.usuario.Usuario;
 import biblioteca.verificacoes.VerificacoesExemplarReserva;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Reserva {
+public class Reserva implements Serializable {
   private int id;
   private Usuario usuario;
   private Exemplar exemplar;

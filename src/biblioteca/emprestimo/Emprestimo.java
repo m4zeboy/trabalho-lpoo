@@ -7,10 +7,11 @@ import biblioteca.usuario.Aluno;
 import biblioteca.usuario.Servidor;
 import biblioteca.usuario.Usuario;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Random;
 
-public class Emprestimo {
+public class Emprestimo implements Serializable {
   public static double valorPorDiaDeAtraso = 2.50;
   private int id;
   private Usuario usuario;
