@@ -86,7 +86,7 @@ public class OperacoesGraficasDeReserva extends OperacoesDeReserva {
       Exemplar exemplar = OperacoesDeExemplar.buscarPorCodigo(acervo, id);
       String saida = "";
       for(Reserva reserva: reservas) {
-        if(reserva.getExemplar().equals(exemplar) && reserva.estaAtiva()) {
+        if(reserva.getExemplar().getId() == exemplar.getId() && reserva.estaAtiva()) {
           saida += reserva;
           saida += "====================================================\n";
         }
