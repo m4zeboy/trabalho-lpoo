@@ -7,6 +7,7 @@ import biblioteca.excecoes.EmprestimoNaoEncontradoException;
 import biblioteca.exemplar.Exemplar;
 import biblioteca.usuario.Usuario;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public abstract class OperacoesDeEmprestimo {
@@ -32,4 +33,21 @@ public abstract class OperacoesDeEmprestimo {
   public abstract void devolver(ArrayList<Emprestimo> emprestimos, ArrayList<Multa> multas);
   public abstract void renovar(ArrayList<Emprestimo> emprestimos, ArrayList<Reserva> reserva);
   public abstract void listar(ArrayList<Emprestimo> emprestimos);
+
+  public static int getTotalDeExemplaresEmprestadosPorUsuarioEmUmPeriodo(Usuario usuario, ArrayList<Emprestimo> emprestimos, LocalDate inicio, LocalDate fim) {
+    int contador = 0;
+    for(Emprestimo emprestimo: emprestimos) {
+      if(emprestimo.getUsuario().getCpf().equals(usuario.getCpf())) {
+        if(
+          (emprestimo.getDataEmprestimo().isEqual(inicio) || emprestimo.getDataEmprestimo().isAfter(inicio))
+          &&
+          (emprestimo.getDataEmprestimo().isBefore(fim) || emprestimo.getDataEmprestimo().isEqual(fim))
+        ) {
+          contador++;
+        }
+      }
+    }
+    return contador;
+  }
+  public abstract void consultarTotalDeExemplaresEmprestadosPorUsuarioEmUmPeriodo(ArrayList<Emprestimo> emprestimos, ArrayList<Usuario> usuarios);
 }

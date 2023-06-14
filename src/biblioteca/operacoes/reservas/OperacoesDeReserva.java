@@ -46,8 +46,9 @@ public abstract class OperacoesDeReserva {
     int contador = 0;
     for(Reserva reserva: reservas) {
       if(
-              (reserva.getDataReserva().isEqual(inicio) || reserva.getDataReserva().isAfter(inicio)) &&
-                      (reserva.getDataReserva().isEqual(fim) || reserva.getDataReserva().isBefore(fim))
+        (reserva.getDataReserva().isEqual(inicio) || reserva.getDataReserva().isAfter(inicio))
+          &&
+        (reserva.getDataReserva().isEqual(fim) || reserva.getDataReserva().isBefore(fim))
       ) {
         if(reserva.getExemplar().getCategorias().contains(categoria)) {
           contador++;

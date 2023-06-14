@@ -56,6 +56,9 @@ public class Emprestimo implements Serializable {
   public LocalDate getDataDevolucao() {
     return dataDevolucao;
   }
+  public LocalDate getDataEmprestimo() {
+    return dataEmprestimo;
+  }
   public StatusDoEmprestimo getStatus() {
     LocalDate hoje = LocalDate.now();
     if(dataDevolucao != null) {

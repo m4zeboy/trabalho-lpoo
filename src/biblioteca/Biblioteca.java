@@ -261,6 +261,9 @@ public class Biblioteca {
           operacoesDeReserva.consultarTotalDeExemplaresReservadosPorCategoriaEmUmPeriodo(reservas,categorias);
           break;
         case 7:
+          operacoesDeEmprestimo.consultarTotalDeExemplaresEmprestadosPorUsuarioEmUmPeriodo(emprestimos, usuarios);
+          break;
+        case 8:
           continuar = false;
           break;
         default:

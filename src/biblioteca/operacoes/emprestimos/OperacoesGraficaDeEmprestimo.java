@@ -7,7 +7,6 @@ import biblioteca.excecoes.*;
 import biblioteca.exemplar.Exemplar;
 import biblioteca.operacoes.PainelGrafico;
 import biblioteca.operacoes.exemplares.OperacoesDeExemplar;
-import biblioteca.operacoes.reservas.OperacoesDeReserva;
 import biblioteca.operacoes.usuario.OperacoesDeUsuario;
 import biblioteca.usuario.Usuario;
 import biblioteca.verificacoes.VerificacoesExemplarReserva;
@@ -15,6 +14,8 @@ import biblioteca.verificacoes.VerificacoesUsuarioEmprestimo;
 import biblioteca.verificacoes.VerificacoesUsuarioReserva;
 
 import javax.swing.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 public class OperacoesGraficaDeEmprestimo extends OperacoesDeEmprestimo {
@@ -109,12 +110,32 @@ public class OperacoesGraficaDeEmprestimo extends OperacoesDeEmprestimo {
   public void listar(ArrayList<Emprestimo> emprestimos) {
     if(emprestimos.size() == 0) {
       JOptionPane.showMessageDialog(null, "Não há empréstimos.");
+    } else {
+      String saida = "";
+      for(Emprestimo emprestimo: emprestimos) {
+        saida += emprestimo;
+        saida +=   "====================================================\n";
+      }
+      PainelGrafico.mostrarMensagemComScroll("Lista de empréstimos",saida);
     }
-    String saida = "";
-    for(Emprestimo emprestimo: emprestimos) {
-      saida += emprestimo;
-      saida +=   "====================================================\n";
+  }
+  @Override
+  public void consultarTotalDeExemplaresEmprestadosPorUsuarioEmUmPeriodo(ArrayList<Emprestimo> emprestimos, ArrayList<Usuario> usuarios) {
+    String cpf = JOptionPane.showInputDialog("CPF: ");
+    try {
+      Usuario usuario = OperacoesDeUsuario.buscarPorCPF(usuarios, cpf);
+      String dataInicio = JOptionPane.showInputDialog("Inicio (yyyy-mm-dd): ");
+      String dataFim = JOptionPane.showInputDialog("Fim (yyyy-mm-dd): ");
+      try {
+        LocalDate inicio = LocalDate.parse(dataInicio);
+        LocalDate fim = LocalDate.parse(dataFim);
+        int total = OperacoesDeEmprestimo.getTotalDeExemplaresEmprestadosPorUsuarioEmUmPeriodo(usuario, emprestimos, inicio, fim);
+        JOptionPane.showMessageDialog(null, "O total de exemplares emprestados pelo usuário " + usuario.getNome() + "no período de " + inicio + " até " + fim + " foi de: " + total + ".");
+      } catch (DateTimeParseException exception) {
+        JOptionPane.showMessageDialog(null, "O valor informado não corresponde a este padrão 'yyyy-mm-dd'");
+      }
+    } catch (UsuarioNaoEncontradoException exception) {
+      JOptionPane.showMessageDialog(null, exception.getMessage());
     }
-    PainelGrafico.mostrarMensagemComScroll("Lista de empréstimos",saida);
   }
 }

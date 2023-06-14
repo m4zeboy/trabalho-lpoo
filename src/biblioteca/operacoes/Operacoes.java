@@ -9,7 +9,8 @@ public abstract class Operacoes {
     mensagem.append("4 - Gerenciar empréstimos\n");
     mensagem.append("5 - Gerenciar reservas\n");
     mensagem.append("6 - Consultar total de exemplares reservados por categoria em um período\n");
-    mensagem.append("7 - Sair do programa\n\n");
+    mensagem.append("7 - Consultar total de exemplares emprestados por usuário em um período\n");
+    mensagem.append("8 - Sair do programa\n\n");
     return mensagem.toString();
   }
   public abstract int selecionarOpcao();
